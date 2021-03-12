@@ -1,4 +1,52 @@
+### 메모 파라미터 설명
 
+| 파라미터    | 설명        | 타입                            |
+| ----------- | ----------- | ------------------------------- |
+| memos       | 메모 리스트 | object array                    |
+| index       | 메모 인덱스 | string                          |
+| title       | 제목        | string                          |
+| description | 메모 본문   | string                          |
+| date        | 마감일      | string                          |
+| status      | 메모 상태   | string("todo", "doing", "done") |
+| result      | 요청 결과   | bool                            |
+| item        | 메모 내용   | object                          |
+
+
+
+### Item 파라미터 설명
+
+- item: object
+    - index: string, 메모 인덱스
+    - title: string, 제목
+    - description: string, 메모 본문
+    - date: string, 마감일
+    - status: string("todo", "doing", "done"), 메모 상태
+
+
+
+### 히스토리 파라미터 설명
+
+| 파라미터     | 설명                       | 타입                             |
+| ------------ | -------------------------- | -------------------------------- |
+| histories    | 히스토리 내역              | object array                     |
+| fromStatus   | 이전 메모 상태             | string?("todo", "doing", "done") |
+| toStatus     | 이후 메모 상태             | string?("todo", "doing", "done") |
+| behavior     | 메모 추가, 이동, 삭제 행위 | string                           |
+| modifiedDate | 메모 추가, 이동, 삭제 시간 | string                           |
+
+
+
+### status 파라미터 설명
+
+| status  | 행위       |
+| ------- | ---------- |
+| "todo"  | todo 메모  |
+| "doing" | doing 메모 |
+| "done"  | done 메모  |
+
+
+
+---
 
 ### 메모 조회
 
@@ -6,18 +54,11 @@
 
 - GET /memos
 
-#### 메모 조회 응답 파라미터
-
-- memos: object array
-- index: string
-- title: string
-- description: string
-- date: number
-- status: string
+#### 메모 조회 응답 파라미터 예시
 
 ```json
 {
-    "memos": [
+    "todo": [
         {
             "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71AFF8",
             "title": "아침먹기",
@@ -32,6 +73,38 @@
             "date": "2020-04-03T00:00:00Z",
             "status": "todo"
         }
+    ],
+    "doing": [
+        {
+            "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71AFF8",
+            "title": "아침먹기",
+            "description": "오늘의 아침은 순대국밥",
+            "date": "2020-04-03T00:00:00Z",
+            "status": "doing"
+        },
+        {
+            "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71AFF9",
+            "title": "점심먹기",
+            "description": "오늘의 점심은 서브웨이",
+            "date": "2020-04-03T00:00:00Z",
+            "status": "doing"
+        }
+    ],
+    "done": [
+        {
+            "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71AFF8",
+            "title": "아침먹기",
+            "description": "오늘의 아침은 순대국밥",
+            "date": "2020-04-03T00:00:00Z",
+            "status": "done"
+        },
+        {
+            "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71AFF9",
+            "title": "점심먹기",
+            "description": "오늘의 점심은 서브웨이",
+            "date": "2020-04-03T00:00:00Z",
+            "status": "done"
+        }
     ]
 }
 ```
@@ -44,12 +117,7 @@
 
 - POST /memo
 
-#### 메모 저장 요청 파라미터
-
-- title: string
-- description: string
-- date: number
-- status: string
+#### 메모 저장 요청 파라미터 예시
 
 ```json
 {
@@ -60,15 +128,7 @@
 }
 ```
 
-#### 메모 저장 응답 파라미터
-
-- result: bool
-- item: object
-- index: string
-- title: string
-- description: string
-- date: string
-- status: string
+#### 메모 저장 응답 파라미터 예시
 
 ```json
 {
@@ -91,13 +151,7 @@
 
 - PATCH /memo/{index}
 
-#### 메모 수정 요청 파라미터
-
-- index: string
-- title: string
-- description: string
-- date: string
-- column: string
+#### 메모 수정 요청 파라미터 예시
 
 ```json
 {
@@ -109,15 +163,7 @@
 }
 ```
 
-#### 메모 수정 응답 파라미터
-
-- result: bool
-- item: object
-- index: string
-- title: string
-- description: string
-- date: string
-- status: string
+#### 메모 수정 응답 파라미터 예시
 
 ```json
 {
@@ -140,19 +186,7 @@
 
 DELETE /memo/{index}
 
-#### 메모 삭제 요청 파라미터
-
-- index: number
-
-#### 메모 삭제 응답 파라미터
-
-- result: bool
-- item: object
-- index: string
-- title: string
-- description: string
-- date: string
-- status: string
+#### 메모 삭제 응답 파라미터 예시
 
 ```json
 {
@@ -175,15 +209,7 @@ DELETE /memo/{index}
 
 - GET /history
 
-#### 히스토리 조회 응답 파라미터
-
-- histories: object array
-- index: string
-- title: string
-- fromStatus: string?
-- toStatus: string?
-- behavior: string
-- modifiedDate: string
+#### 히스토리 조회 응답 파라미터 예시
 
 ```json
 {
@@ -212,3 +238,15 @@ DELETE /memo/{index}
     ]
 }
 ```
+
+---
+
+### 요청 실패 시 응답 내용
+
+| 에러 내용                          | HTTP status code       |
+| ---------------------------------- | ---------------------- |
+| 유효하지 않은 요청할 경우          | 400 Bad Request        |
+| 유효하지 않은 페이지를 요청할 경우 | 404 Not Found          |
+| 허용하지 않은 메서드를 요청할 경우 | 405 Method Not Allowed |
+| 요청 시간 아웃                     | 408 Request Timeout    |
+
