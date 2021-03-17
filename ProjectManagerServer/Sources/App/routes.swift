@@ -6,19 +6,7 @@ func routes(_ app: Application) throws {
         things.get { req -> EventLoopFuture<[ThingList]> in
             return State.allCases.map { state in
                 Thing.query(on: req.db).filter(\.$state == state).all().map { things -> ThingList in
-                    var thingSimples: [ThingSimple] = []
-                    for thing in things {
-                        if let id = thing.id,
-                           let dueDate = thing.dueDate {
-                            let thingSimple = ThingSimple(
-                                id: id,
-                                title: thing.title,
-                                description: thing.description,
-                                dueDate: dueDate.timeIntervalSince1970
-                            )
-                            thingSimples.append(thingSimple)
-                        }
-                    }
+                    let thingSimples = things.compactMap { $0.response }
                     return ThingList(state: state, list: thingSimples)
                 }
             }.flatten(on: req.eventLoop)
@@ -29,7 +17,7 @@ func routes(_ app: Application) throws {
             let thingCreate = try req.content.decode(ThingCreate.self)
             
             let newThing = NewThing(title: thingCreate.title,
-                              description: thingCreate.description)
+                                    description: thingCreate.description)
             
             if let dueDate = thingCreate.dueDate {
                 newThing.dueDate = Date(timeIntervalSince1970: dueDate)
