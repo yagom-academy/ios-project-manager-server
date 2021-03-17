@@ -4,7 +4,7 @@ import SQLKit
 struct CreateThing: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         let stateDefaultValue = SQLColumnConstraintAlgorithm.default(State.todo.rawValue)
-        return database.schema("things")
+        return database.schema(Thing.schema)
             .field("id", .custom("serial"))
             .field("title", .string, .required)
             .field("description", .string)

@@ -1,6 +1,7 @@
 import Fluent
 import Vapor
 
+// TODO: 응답에 바디 없는 것들은 204 No Content 로 바꾸기
 func routes(_ app: Application) throws {
     app.group("things") { things in
         things.get { req -> EventLoopFuture<[ThingList]> in
@@ -24,24 +25,33 @@ func routes(_ app: Application) throws {
             }.flatten(on: req.eventLoop)
         }
         
-        things.post { req -> EventLoopFuture<NewThing> in
+        things.post { req -> EventLoopFuture<ThingSimple> in
             let thingCreate = try req.content.decode(ThingCreate.self)
             
-            var dueDate: Date?
-            if let dueDateUnixDouble = thingCreate.dueDate {
-                dueDate = Date(timeIntervalSince1970: dueDateUnixDouble)
-            }
-            let thing = NewThing(title: thingCreate.title,
-                              description: thingCreate.description,
-                              dueDate: dueDate)
+            let newThing = NewThing(title: thingCreate.title,
+                              description: thingCreate.description)
             
-            return thing.save(on: req.db).map {
-                thing
+            if let dueDate = thingCreate.dueDate {
+                newThing.dueDate = Date(timeIntervalSince1970: dueDate)
+            }
+            
+            return newThing.save(on: req.db).flatMapThrowing {
+                let id = try newThing.requireID()
+                var thingSimple = ThingSimple(
+                    id: id,
+                    title: newThing.title,
+                    description: newThing.description)
+                
+                if let dueDate = newThing.dueDate {
+                    thingSimple.dueDate = dueDate.timeIntervalSince1970
+                }
+                
+                return thingSimple
             }
         }
         
         things.group(":id") { thing in
-            thing.patch { req -> EventLoopFuture<Thing> in
+            thing.patch { req -> EventLoopFuture<ThingSimple> in
                 let thingUpdate = try req.content.decode(ThingUpdate.self)
                 return Thing.find(req.parameters.get("id"), on: req.db)
                     .unwrap(or: Abort(.notFound))
@@ -61,16 +71,33 @@ func routes(_ app: Application) throws {
                         if let state = thingUpdate.state {
                             thing.state = state
                         }
+                        // thing.save(on: req.db).transform(to: HTTPStatus.created)
+                        // -> HTTPResponseStatus
                         
-                        return thing.save(on: req.db).transform(to: thing)
+                        return thing.save(on: req.db).flatMapThrowing {
+                            guard let response = thing.response else {
+                                throw FluentError.idRequired
+                            }
+
+                            return response
+                        }
                     }
             }
             
-            thing.delete { req -> EventLoopFuture<Thing> in
+            thing.delete { req -> EventLoopFuture<ThingSimple> in
                 return Thing.find(req.parameters.get("id"), on: req.db)
                     .unwrap(or: Abort(.notFound))
                     .flatMap { thing in
-                        thing.delete(on: req.db).transform(to: thing)
+                        //thing.delete(on: req.db).transform(to: thing.response)
+                        // thing.delete(on: req.db).transform(to: thing)
+                        
+                        return thing.delete(on: req.db).flatMapThrowing {
+                            guard let response = thing.response else {
+                                throw FluentError.idRequired
+                            }
+
+                            return response
+                        }
                     }
             }
         }

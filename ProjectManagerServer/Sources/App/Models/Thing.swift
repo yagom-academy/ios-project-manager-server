@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Thing.swift
 //  
 //
 //  Created by 김지혜 on 2021/03/13.
@@ -35,4 +35,21 @@ final class Thing: Model {
     init() { }
 }
 
-extension Thing: Content {}
+extension Thing {
+    var response: ThingSimple? {
+        guard let id = self.id else {
+            return nil
+        }
+        
+        var thingSimple = ThingSimple(
+            id: id,
+            title: self.title,
+            description: self.description)
+        
+        if let dueDate = self.dueDate {
+            thingSimple.dueDate = dueDate.timeIntervalSince1970
+        }
+        
+        return thingSimple
+    }
+}
