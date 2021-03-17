@@ -19,6 +19,6 @@ public func configure(_ app: Application) throws {
     
     app.migrations.add(CreateThing())
     app.logger.logLevel = .debug
-    try app.autoMigrate().wait() // 수정필요
+    try app.autoMigrate().wait()
     try routes(app)
 }
