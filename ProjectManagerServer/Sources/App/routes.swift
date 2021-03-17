@@ -1,7 +1,6 @@
 import Fluent
 import Vapor
 
-// TODO: 응답에 바디 없는 것들은 204 No Content 로 바꾸기
 func routes(_ app: Application) throws {
     app.group("things") { things in
         things.get { req -> EventLoopFuture<[ThingList]> in
@@ -25,7 +24,7 @@ func routes(_ app: Application) throws {
             }.flatten(on: req.eventLoop)
         }
         
-        things.post { req -> EventLoopFuture<ThingSimple> in
+        things.post { req -> EventLoopFuture<HTTPResponseStatus> in
             try ThingCreate.validate(content: req)
             let thingCreate = try req.content.decode(ThingCreate.self)
             
@@ -36,23 +35,11 @@ func routes(_ app: Application) throws {
                 newThing.dueDate = Date(timeIntervalSince1970: dueDate)
             }
             
-            return newThing.save(on: req.db).flatMapThrowing {
-                let id = try newThing.requireID()
-                var thingSimple = ThingSimple(
-                    id: id,
-                    title: newThing.title,
-                    description: newThing.description)
-                
-                if let dueDate = newThing.dueDate {
-                    thingSimple.dueDate = dueDate.timeIntervalSince1970
-                }
-                
-                return thingSimple
-            }
+            return newThing.save(on: req.db).transform(to: HTTPStatus.created)
         }
         
         things.group(":id") { thing in
-            thing.patch { req -> EventLoopFuture<ThingSimple> in
+            thing.patch { req -> EventLoopFuture<HTTPResponseStatus> in
                 try ThingUpdate.validate(content: req)
                 let thingUpdate = try req.content.decode(ThingUpdate.self)
                 return Thing.find(req.parameters.get("id"), on: req.db)
@@ -73,31 +60,16 @@ func routes(_ app: Application) throws {
                         if let state = thingUpdate.state {
                             thing.state = state
                         }
-                        // no content
-                        // thing.save(on: req.db).transform(to: HTTPStatus.created)
-                        // -> HTTPResponseStatus
                         
-                        return thing.save(on: req.db).flatMapThrowing {
-                            guard let response = thing.response else {
-                                throw FluentError.idRequired
-                            }
-
-                            return response
-                        }
+                        return thing.save(on: req.db).transform(to: HTTPStatus.noContent)
                     }
             }
             
-            thing.delete { req -> EventLoopFuture<ThingSimple> in
+            thing.delete { req -> EventLoopFuture<HTTPResponseStatus> in
                 return Thing.find(req.parameters.get("id"), on: req.db)
                     .unwrap(or: Abort(.notFound))
                     .flatMap { thing in
-                        return thing.delete(on: req.db).flatMapThrowing {
-                            guard let response = thing.response else {
-                                throw FluentError.idRequired
-                            }
-
-                            return response
-                        }
+                        return thing.delete(on: req.db).transform(to: HTTPStatus.noContent)
                     }
             }
         }
