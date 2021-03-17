@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ThingCreate.swift
 //  
 //
 //  Created by 김지혜 on 2021/03/11.
@@ -17,15 +17,10 @@ struct ThingCreate: Content {
         case dueDate = "due_date"
     }
 }
-//struct Response: Content {
-//    var error: Error?
-//    var payload: Payload?
-//}
-//
-//struct Payload: Content {
-//    id: Int
-//}
-//
-//struct Error: Content {
-//    
-//}
+
+extension ThingCreate: Validatable {
+    static func validations(_ validations: inout Validations) {
+        validations.add("title", as: String.self, is: .count(...500))
+        validations.add("description", as: String.self, is: .count(...1000))
+    }
+}

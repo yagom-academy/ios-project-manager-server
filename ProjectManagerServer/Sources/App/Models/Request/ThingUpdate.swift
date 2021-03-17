@@ -18,3 +18,11 @@ struct ThingUpdate: Content {
         case dueDate = "due_date"
     }
 }
+
+extension ThingUpdate: Validatable {
+    static func validations(_ validations: inout Validations) {
+        validations.add("title", as: String.self, is: .count(...500))
+        validations.add("description", as: String.self, is: .count(...1000))
+        validations.add("state", as: String.self, is: .in(State.allCases.map { $0.rawValue }), required: false)
+    }
+}

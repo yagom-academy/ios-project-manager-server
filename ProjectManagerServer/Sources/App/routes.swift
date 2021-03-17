@@ -26,6 +26,7 @@ func routes(_ app: Application) throws {
         }
         
         things.post { req -> EventLoopFuture<ThingSimple> in
+            try ThingCreate.validate(content: req)
             let thingCreate = try req.content.decode(ThingCreate.self)
             
             let newThing = NewThing(title: thingCreate.title,
@@ -52,6 +53,7 @@ func routes(_ app: Application) throws {
         
         things.group(":id") { thing in
             thing.patch { req -> EventLoopFuture<ThingSimple> in
+                try ThingUpdate.validate(content: req)
                 let thingUpdate = try req.content.decode(ThingUpdate.self)
                 return Thing.find(req.parameters.get("id"), on: req.db)
                     .unwrap(or: Abort(.notFound))
@@ -71,6 +73,7 @@ func routes(_ app: Application) throws {
                         if let state = thingUpdate.state {
                             thing.state = state
                         }
+                        // no content
                         // thing.save(on: req.db).transform(to: HTTPStatus.created)
                         // -> HTTPResponseStatus
                         
@@ -88,9 +91,6 @@ func routes(_ app: Application) throws {
                 return Thing.find(req.parameters.get("id"), on: req.db)
                     .unwrap(or: Abort(.notFound))
                     .flatMap { thing in
-                        //thing.delete(on: req.db).transform(to: thing.response)
-                        // thing.delete(on: req.db).transform(to: thing)
-                        
                         return thing.delete(on: req.db).flatMapThrowing {
                             guard let response = thing.response else {
                                 throw FluentError.idRequired

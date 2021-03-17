@@ -38,6 +38,3 @@ final class NewThing: Model {
         self.dueDate = dueDate
     }
 }
-
-// 이게 있어야 응답으로 줄 수 있음 thing conform to 'ResponseEncodable'
-extension NewThing: Content {}
