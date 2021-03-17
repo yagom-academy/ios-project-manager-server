@@ -1,8 +1,19 @@
-//
-//  File.swift
-//  
-//
-//  Created by Zero DotOne on 2021/03/17.
-//
+import Fluent
+import Vapor
 
-import Foundation
+final class Todo: Model, Content {
+    static let schema = "todos"
+    
+    @ID(key: .id)
+    var id: UUID?
+
+    @Field(key: "title")
+    var title: String
+
+    init() { }
+
+    init(id: UUID? = nil, title: String) {
+        self.id = id
+        self.title = title
+    }
+}

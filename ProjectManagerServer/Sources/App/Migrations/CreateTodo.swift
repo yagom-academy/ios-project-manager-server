@@ -1,8 +1,14 @@
-//
-//  File.swift
-//  
-//
-//  Created by Zero DotOne on 2021/03/17.
-//
+import Fluent
 
-import Foundation
+struct CreateTodo: Migration {
+    func prepare(on database: Database) -> EventLoopFuture<Void> {
+        return database.schema("todos")
+            .id()
+            .field("title", .string, .required)
+            .create()
+    }
+
+    func revert(on database: Database) -> EventLoopFuture<Void> {
+        return database.schema("todos").delete()
+    }
+}
