@@ -1,10 +1,3 @@
-//
-//  NewThing.swift
-//  
-//
-//  Created by 김지혜 on 2021/03/11.
-//
-
 import FluentPostgresDriver
 import Vapor
 
