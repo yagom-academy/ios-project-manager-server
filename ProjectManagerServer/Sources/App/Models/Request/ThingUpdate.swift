@@ -1,10 +1,10 @@
 import Vapor
 
 struct ThingUpdate: Content {
-    var title: String?
-    var description: String?
-    var dueDate: Double?
-    var state: State?
+    let title: String?
+    let description: String?
+    let dueDate: Double?
+    let state: State?
     
     enum CodingKeys: String, CodingKey {
         case title, description, state
