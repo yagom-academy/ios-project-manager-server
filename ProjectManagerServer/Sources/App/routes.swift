@@ -12,7 +12,7 @@ func routes(_ app: Application) throws {
             }.flatten(on: req.eventLoop)
         }
         
-        things.post { req -> EventLoopFuture<HTTPResponseStatus> in
+        things.post { req -> EventLoopFuture<Response> in
             try ThingCreate.validate(content: req)
             let thingCreate = try req.content.decode(ThingCreate.self)
             
@@ -23,7 +23,17 @@ func routes(_ app: Application) throws {
                 newThing.dueDate = Date(timeIntervalSince1970: dueDate)
             }
             
-            return newThing.save(on: req.db).transform(to: HTTPStatus.created)
+            return newThing.save(on: req.db).flatMapThrowing {
+                let header = ("Content-Type", "application/json; charset=utf-8")
+                
+                let id = try newThing.requireID()
+                let body = ["id": id]
+                let bodyJsonData = try JSONEncoder().encode(body)
+                
+                return Response(status: .created,
+                                headers: HTTPHeaders(dictionaryLiteral: header),
+                                body: .init(data: bodyJsonData))
+            }
         }
         
         things.group(":id") { thing in
