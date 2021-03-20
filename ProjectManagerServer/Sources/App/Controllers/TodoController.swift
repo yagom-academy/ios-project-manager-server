@@ -4,14 +4,14 @@ import Vapor
 struct TodoController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let todos = routes.grouped("todos")
-        todos.get(use: index)
+        todos.get(use: read)
         todos.post(use: create)
         todos.group(":todoID") { todo in
             todo.delete(use: delete)
         }
     }
 
-    func index(req: Request) throws -> EventLoopFuture<[Todo]> {
+    func read(req: Request) throws -> EventLoopFuture<[Todo]> {
         return Todo.query(on: req.db).all()
     }
 
