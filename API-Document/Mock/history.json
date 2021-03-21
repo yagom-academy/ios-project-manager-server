@@ -1,0 +1,23 @@
+[
+    {
+        "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71A000",
+        "title": "Moved '아침먹기' from TODO to DOING.",
+        "fromStatus": "todo",
+        "toStatus": "doing",
+        "behavior": "moved",
+        "modifiedDate": "2020-04-03T00:00:00Z"
+    },
+    {
+        "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71A001",
+        "title": "Added '점심먹기'",
+        "behavior": "added",
+        "modifiedDate": "2020-04-03T00:00:00Z"
+    },
+    {
+        "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71A002",
+        "title": "Added '점심먹기'",
+        "fromStatus": "done",
+        "behavior": "removed",
+        "modifiedDate": "2020-04-03T00:00:00Z"
+    }
+]
