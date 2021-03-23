@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by iluxsm on 2021/03/23.
-//
-
 import Vapor
 import Fluent
 
@@ -54,9 +47,15 @@ struct ThingsController: RouteCollection {
     }
 
     func update(req: Request) throws -> EventLoopFuture<HTTPResponseStatus> {
+        guard let idInput = req.parameters.get("id"),
+              let id = Int(idInput) else {
+            throw ThingError.invalidId
+        }
+        
         try ThingUpdate.validate(content: req)
         let thingUpdate = try req.content.decode(ThingUpdate.self)
-        return Thing.find(req.parameters.get("id"), on: req.db)
+
+        return Thing.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMap { thing in
                 if let title = thingUpdate.title {
@@ -80,7 +79,12 @@ struct ThingsController: RouteCollection {
     }
 
     func delete(req: Request) throws -> EventLoopFuture<HTTPResponseStatus> {
-        return Thing.find(req.parameters.get("id"), on: req.db)
+        guard let idInput = req.parameters.get("id"),
+              let id = Int(idInput) else {
+            throw ThingError.invalidId
+        }
+        
+        return Thing.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMap { thing in
                 return thing.delete(on: req.db).transform(to: HTTPStatus.noContent)
