@@ -15,7 +15,7 @@ struct ThingsController: RouteCollection {
         things.post(use: create)
 
         things.group(":id") { thing in
-            thing.put(use: update)
+            thing.patch(use: update)
             thing.delete(use: delete)
         }
     }
