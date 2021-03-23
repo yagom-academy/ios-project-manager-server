@@ -8,7 +8,7 @@ public func configure(_ app: Application) throws {
         app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
     }
 
-    app.migrations.add(CreateTodo())
+    app.migrations.add(CreateMemo())
 
     try routes(app)
 }
