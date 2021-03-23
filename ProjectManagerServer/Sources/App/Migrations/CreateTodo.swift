@@ -10,12 +10,11 @@ import Fluent
 struct CreateTodo: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Todo.schema)
-            .id()
+            .field("id", .custom("serial"))
             .field("title", .string, .required)
             .field("description", .string)
             .field("deadline", .datetime)
             .field("status", .int, .required)
-            .field("status_index", .int, .required)
             .create()
     }
 
