@@ -11,8 +11,8 @@ import Vapor
 final class Todo: Model, Content {
     static let schema = "todos"
     
-    @ID(key: .id)
-    var id: UUID?
+    @ID(custom: "id", generatedBy: .database)
+    var id: Int?
 
     @Field(key: "title")
     var title: String
@@ -25,18 +25,14 @@ final class Todo: Model, Content {
     
     @Field(key: "status")
     var status: Int
-    
-    @Field(key: "status_index")
-    var status_index: Int
 
     init() { }
 
-    init(id: UUID? = nil, title: String, description: String? = nil, deadline: Date? = nil, status: Int, status_index: Int) {
+    init(id: Int? = nil, title: String, description: String? = nil, deadline: Date? = nil, status: Int) {
         self.id = id
         self.title = title
         self.description = description
         self.deadline = deadline
         self.status = status
-        self.status_index = status_index
     }
 }
