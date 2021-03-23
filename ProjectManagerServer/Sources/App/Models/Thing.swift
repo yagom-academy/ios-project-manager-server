@@ -43,6 +43,10 @@ extension Thing {
             thingSimple.dueDate = dueDate.timeIntervalSince1970
         }
         
+        if let updatedAt = self.updatedAt {
+            thingSimple.updatedAt = updatedAt.timeIntervalSince1970
+        }
+        
         return thingSimple
     }
 }

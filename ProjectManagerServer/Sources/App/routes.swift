@@ -3,6 +3,7 @@ import Vapor
 
 func routes(_ app: Application) throws {
     app.group("things") { things in
+        // 응답 한번 query 날려서 쪼개기
         things.get { req -> EventLoopFuture<[ThingList]> in
             return State.allCases.map { state in
                 Thing.query(on: req.db).filter(\.$state == state).all().map { things -> ThingList in
