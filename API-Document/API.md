@@ -148,7 +148,6 @@
 
 ```json
 {
-  	"index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71AF10",
     "title": "아침먹기",
     "description": "오늘의 아침은 순대국밥",
     "date": "2020-04-03T00:00:00Z",
