@@ -34,19 +34,11 @@ extension Thing {
             return nil
         }
         
-        var thingSimple = ThingSimple(
+        return ThingSimple(
             id: id,
             title: self.title,
-            description: self.description)
-        
-        if let dueDate = self.dueDate {
-            thingSimple.dueDate = dueDate.timeIntervalSince1970
-        }
-        
-        if let updatedAt = self.updatedAt {
-            thingSimple.updatedAt = updatedAt.timeIntervalSince1970
-        }
-        
-        return thingSimple
+            description: self.description,
+            dueDate: self.dueDate?.timeIntervalSince1970,
+            updatedAt: self.updatedAt?.timeIntervalSince1970)
     }
 }

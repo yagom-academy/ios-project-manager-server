@@ -1,11 +1,11 @@
 import Vapor
 
 struct ThingSimple: Content {
-    var id: Int
-    var title: String
-    var description: String?
-    var dueDate: Double?
-    var updatedAt: Double?
+    let id: Int
+    let title: String
+    let description: String?
+    let dueDate: Double?
+    let updatedAt: Double?
     
     enum CodingKeys: String, CodingKey {
         case id, title, description

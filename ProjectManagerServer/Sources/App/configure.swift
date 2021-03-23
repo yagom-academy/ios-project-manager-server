@@ -18,7 +18,7 @@ public func configure(_ app: Application) throws {
     }
     
     app.migrations.add(CreateThing())
-    app.logger.logLevel = .debug // 로그 레벨을 정해줌
+    app.logger.logLevel = .debug
     try app.autoMigrate().wait()
     try routes(app)
 }
