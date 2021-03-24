@@ -17,7 +17,7 @@ final class Thing: Model {
     var dueDate: Date?
     
     @Field(key: "state")
-    var state: State?
+    var state: State
     
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?

@@ -8,7 +8,7 @@ extension ThingError: AbortError {
     var reason: String {
         switch self {
         case .invalidId:
-            return "id is not integer"
+            return "ID is not integer"
         }
     }
 

@@ -12,17 +12,30 @@ struct ThingsController: RouteCollection {
             thing.delete(use: delete)
         }
     }
-
+    
     func fetch(req: Request) throws -> EventLoopFuture<[ThingList]> {
-        return State.allCases.map { state in
-            Thing.query(on: req.db).filter(\.$state == state).all().map { things -> ThingList in
-                let thingSimples = things.compactMap { $0.response }
-                return ThingList(state: state, list: thingSimples)
+        try checkContentType(req)
+        return Thing.query(on: req.db).all().map { things -> [ThingList] in
+            let group = Dictionary(grouping: things, by: { $0.state })
+            
+            var lists: [ThingList] = []
+            for (key, value) in group {
+                let thingSimples = value.compactMap { $0.response }
+                lists.append(ThingList(state: key, list: thingSimples))
             }
-        }.flatten(on: req.eventLoop)
+            
+            State.allCases.forEach { state in
+                if group[state] == nil {
+                    lists.append(ThingList(state: state, list: []))
+                }
+            }
+            
+            return lists
+        }
     }
 
     func create(req: Request) throws -> EventLoopFuture<Response> {
+        try checkContentType(req)
         try ThingCreate.validate(content: req)
         let thingCreate = try req.content.decode(ThingCreate.self)
 
@@ -47,10 +60,8 @@ struct ThingsController: RouteCollection {
     }
 
     func update(req: Request) throws -> EventLoopFuture<HTTPResponseStatus> {
-        guard let idInput = req.parameters.get("id"),
-              let id = Int(idInput) else {
-            throw ThingError.invalidId
-        }
+        try checkContentType(req)
+        let id = try verifyId(req)
         
         try ThingUpdate.validate(content: req)
         let thingUpdate = try req.content.decode(ThingUpdate.self)
@@ -79,15 +90,28 @@ struct ThingsController: RouteCollection {
     }
 
     func delete(req: Request) throws -> EventLoopFuture<HTTPResponseStatus> {
+        try checkContentType(req)
+        let id = try verifyId(req)
+        
+        return Thing.find(id, on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMap { $0.delete(on: req.db) }
+            .transform(to: HTTPStatus.noContent)
+    }
+    
+    private func checkContentType(_ req: Request) throws {
+        guard let contentType = req.headers.contentType,
+              contentType == .json else {
+            throw Abort(.unsupportedMediaType)
+        }
+    }
+    
+    private func verifyId(_ req: Request) throws -> Int {
         guard let idInput = req.parameters.get("id"),
               let id = Int(idInput) else {
             throw ThingError.invalidId
         }
         
-        return Thing.find(id, on: req.db)
-            .unwrap(or: Abort(.notFound))
-            .flatMap { thing in
-                return thing.delete(on: req.db).transform(to: HTTPStatus.noContent)
-            }
+        return id
     }
 }
