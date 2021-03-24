@@ -1,9 +1,9 @@
 import Vapor
 
 struct ThingCreate: Content {
-    var title: String
-    var description: String?
-    var dueDate: Double?
+    let title: String
+    let description: String?
+    let dueDate: Double?
     
     enum CodingKeys: String, CodingKey {
         case title, description

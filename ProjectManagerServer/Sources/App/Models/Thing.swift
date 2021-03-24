@@ -17,7 +17,7 @@ final class Thing: Model {
     var dueDate: Date?
     
     @Field(key: "state")
-    var state: State?
+    var state: State
     
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
@@ -34,15 +34,11 @@ extension Thing {
             return nil
         }
         
-        var thingSimple = ThingSimple(
+        return ThingSimple(
             id: id,
             title: self.title,
-            description: self.description)
-        
-        if let dueDate = self.dueDate {
-            thingSimple.dueDate = dueDate.timeIntervalSince1970
-        }
-        
-        return thingSimple
+            description: self.description,
+            dueDate: self.dueDate?.timeIntervalSince1970,
+            updatedAt: self.updatedAt?.timeIntervalSince1970)
     }
 }
