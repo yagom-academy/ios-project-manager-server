@@ -35,7 +35,10 @@ struct TodoController: RouteCollection {
     }
     
     func read(req: Request) throws -> EventLoopFuture<Todo> {
-        return Todo.find(req.parameters.get("todoID"), on: req.db)
+        try checkContentType(req)
+        let id = try checkID(req)
+        
+        return Todo.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
     }
     
