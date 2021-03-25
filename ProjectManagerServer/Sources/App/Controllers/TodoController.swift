@@ -22,8 +22,16 @@ struct TodoController: RouteCollection {
         }
     }
     
-    func readAll(req: Request) throws -> EventLoopFuture<[Todo]> {
-        return Todo.query(on: req.db).all()
+    func readAll(req: Request) throws -> EventLoopFuture<[TodoList]> {
+        try checkContentType(req)
+        
+        return Todo.query(on: req.db).all().map { todo -> [TodoList] in
+            var todoList: [TodoList] = []
+            let oneTodo = todo.compactMap { $0.response }
+            todoList.append(TodoList(todoList: oneTodo))
+            
+            return todoList
+        }
     }
     
     func read(req: Request) throws -> EventLoopFuture<Todo> {
