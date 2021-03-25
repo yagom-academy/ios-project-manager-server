@@ -94,11 +94,21 @@ struct TodoController: RouteCollection {
             }
     }
     
-    func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
-        return Todo.find(req.parameters.get("todoID"), on: req.db)
+    func delete(req: Request) throws -> EventLoopFuture<Response> {
+        try checkContentType(req)
+        let id = try checkID(req)
+        
+        return Todo.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
-            .flatMap { $0.delete(on: req.db) }
-            .transform(to: .ok)
+            .flatMapThrowing { todo in
+                let header = ("Content-Type", "application/json; charset=utf-8")
+                let bodyJsonData = try encodeHTTPBody(todo)
+                todo.delete(on: req.db)
+                
+                return Response(status: .ok,
+                                headers: HTTPHeaders(dictionaryLiteral: header),
+                                body: .init(data: bodyJsonData))
+            }
     }
     
     private func encodeHTTPBody(_ body: Todo) throws -> Data {
