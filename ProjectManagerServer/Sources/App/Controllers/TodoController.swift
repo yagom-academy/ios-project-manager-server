@@ -49,5 +49,13 @@ struct TodoController: RouteCollection {
             throw Abort(.unsupportedMediaType)
         }
     }
+    
+    private func checkID(_ req: Request) throws -> Int {
+        guard let deliveredID = req.parameters.get("id"),
+              let id = Int(deliveredID) else {
+            throw TodoError.invalidID
+        }
+        return id
+    }
 }
 
