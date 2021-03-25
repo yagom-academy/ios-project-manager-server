@@ -12,11 +12,16 @@ struct TodoController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let todos = routes.grouped("todos")
         todos.get(use: readAll)
-        todos.get(":todoID", use: read)
-        todos.post(use: create)
-        todos.delete(":todoID", use: delete)
+        
+        let todo = routes.grouped("todo")
+        todo.post(use: create)
+        todo.group(":id") { todo in
+            todo.patch(use: update)
+            todo.get(use: read)
+            todo.delete(use: delete)
+        }
     }
-
+    
     func readAll(req: Request) throws -> EventLoopFuture<[Todo]> {
         return Todo.query(on: req.db).all()
     }
@@ -25,12 +30,12 @@ struct TodoController: RouteCollection {
         return Todo.find(req.parameters.get("todoID"), on: req.db)
             .unwrap(or: Abort(.notFound))
     }
-
+    
     func create(req: Request) throws -> EventLoopFuture<Todo> {
         let todo = try req.content.decode(Todo.self)
         return todo.save(on: req.db).map { todo }
     }
-
+    
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
         return Todo.find(req.parameters.get("todoID"), on: req.db)
             .unwrap(or: Abort(.notFound))
