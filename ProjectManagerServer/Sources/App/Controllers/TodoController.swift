@@ -46,9 +46,9 @@ struct TodoController: RouteCollection {
         try checkContentType(req)
         let todoCreate = try req.content.decode(TodoCreate.self)
         let todo = Todo(title: todoCreate.title,
-                           description: todoCreate.description,
-                           deadline: todoCreate.deadline,
-                           status: todoCreate.status)
+                        description: todoCreate.description,
+                        deadline: todoCreate.deadline,
+                        status: todoCreate.status)
         
         return todo.save(on: req.db).flatMapThrowing {
             let header = ("Content-Type", "application/json; charset=utf-8")
@@ -58,6 +58,40 @@ struct TodoController: RouteCollection {
                             headers: HTTPHeaders(dictionaryLiteral: header),
                             body: .init(data: bodyJsonData))
         }
+    }
+    
+    func update(req: Request) throws -> EventLoopFuture<Response> {
+        try checkContentType(req)
+        let id = try checkID(req)
+        let todoUpdate = try req.content.decode(TodoUpdate.self)
+        
+        return Todo.find(id, on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMapThrowing { todo in
+                if let title = todoUpdate.title {
+                    todo.title = title
+                }
+                
+                if let description = todoUpdate.description {
+                    todo.description = description
+                }
+                
+                if let status = todoUpdate.status {
+                    todo.status = status
+                }
+                
+                if let deadline = todoUpdate.deadline {
+                    todo.deadline = deadline
+                }
+                todo.save(on: req.db)
+                
+                let header = ("Content-Type", "application/json; charset=utf-8")
+                let bodyJsonData = try encodeHTTPBody(todo)
+                
+                return Response(status: .ok,
+                                headers: HTTPHeaders(dictionaryLiteral: header),
+                                body: .init(data: bodyJsonData))
+            }
     }
     
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
