@@ -42,5 +42,12 @@ struct TodoController: RouteCollection {
             .flatMap { $0.delete(on: req.db) }
             .transform(to: .ok)
     }
+    
+    private func checkContentType(_ req: Request) throws {
+        guard let contentType = req.headers.contentType,
+              contentType == .json else {
+            throw Abort(.unsupportedMediaType)
+        }
+    }
 }
 
