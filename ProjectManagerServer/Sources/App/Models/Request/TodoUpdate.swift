@@ -7,6 +7,7 @@
 import Vapor
 
 struct TodoUpdate: Content {
+    let id: Int
     let title: String?
     let description: String?
     let deadline: Date?
