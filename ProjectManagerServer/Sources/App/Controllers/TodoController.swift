@@ -22,16 +22,10 @@ struct TodoController: RouteCollection {
         }
     }
     
-    func readAll(req: Request) throws -> EventLoopFuture<[TodoList]> {
+    func readAll(req: Request) throws -> EventLoopFuture<[Todo]> {
         try checkContentType(req)
         
-        return Todo.query(on: req.db).all().map { todo -> [TodoList] in
-            var todoList: [TodoList] = []
-            let oneTodo = todo.compactMap { $0.response }
-            todoList.append(TodoList(todoList: oneTodo))
-            
-            return todoList
-        }
+        return Todo.query(on: req.db).all()
     }
     
     func read(req: Request) throws -> EventLoopFuture<Todo> {
@@ -64,6 +58,10 @@ struct TodoController: RouteCollection {
         try checkContentType(req)
         let id = try checkID(req)
         let todoUpdate = try req.content.decode(TodoUpdate.self)
+        
+        guard todoUpdate.id == id else {
+            throw TodoError.notMatchID
+        }
         
         return Todo.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
@@ -129,7 +127,7 @@ struct TodoController: RouteCollection {
     private func checkID(_ req: Request) throws -> Int {
         guard let deliveredID = req.parameters.get("id"),
               let id = Int(deliveredID) else {
-            throw TodoError.invalidID
+            throw TodoError.invalidIDType
         }
         return id
     }
