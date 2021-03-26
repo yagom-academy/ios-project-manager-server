@@ -36,17 +36,3 @@ final class Todo: Model, Content {
         self.status = status
     }
 }
-
-extension Todo {
-    var response: OneTodo? {
-        guard let id = self.id else {
-            return nil
-        }
-        
-    return OneTodo(id: id,
-                 title: self.title,
-                 description: self.description,
-                 deadline: self.deadline,
-                 status: self.status)
-    }
-}
