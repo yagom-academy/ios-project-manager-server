@@ -13,7 +13,7 @@
 | Response Body                   ||
 | ------------ | ----------------- |
 | === JSON Object ===             ||
-| todoList     | Object Array      |
+| -            | Object Array      |
 | === JSON Object ===             ||
 | id           | Number            |
 | title        | String            |
