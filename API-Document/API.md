@@ -241,3 +241,14 @@ DELETE /memo/{index}
 | 허용하지 않은 메서드를 요청할 경우 | 405 Method Not Allowed |
 | 요청 시간 아웃                     | 408 Request Timeout    |
 
+### 에러 응답 파라미터 예시
+
+```json
+{
+		"error":true,
+		"reason":"Not Found",
+}
+```
+
+-   error: 에러 발생 시 true 값 지정
+-   reason: 에러 발생 이유 명시
