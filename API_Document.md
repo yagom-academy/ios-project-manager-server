@@ -83,7 +83,7 @@
 ## 할 일 등록
 
 - `Method`: POST
-- `Path`: /todo/:id
+- `Path`: /todo
 - `HTTP Status Code`
     - Success: 201
     - Error: 400, 404, 500
@@ -110,7 +110,7 @@
 | Request Body                    || | Response Body                   ||
 | -----------  | ----------------- |-| ------------ | ----------------- |
 | === JSON Object  ===            || | === JSON Object  ===            ||
-| id           | Number            | | id           | Number            |
+| -            | -                 | | id           | Number            |
 | title        | String (Optional) | | title        | String            |
 | description  | String (Optional) | | description  | String (Optional) |
 | deadline     | Date (Optional)   | | deadline     | Date (Optional)   |
