@@ -7,18 +7,23 @@
 import Vapor
 
 enum TodoError: AbortError {
-    case invalidID
+    case invalidIDType
+    case notMatchID
     
     var description: String {
         switch self {
-        case .invalidID:
+        case .invalidIDType:
             return "요청하신 id의 타입이 일치하지 않습니다."
+        case .notMatchID:
+            return "요청하신 id가 url과 일치하지 않습니다."
         }
     }
     
     var status: HTTPStatus {
         switch self {
-        case .invalidID:
+        case .invalidIDType:
+            return .badRequest
+        case .notMatchID:
             return .badRequest
         }
     }
