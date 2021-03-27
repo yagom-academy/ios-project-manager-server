@@ -1,6 +1,6 @@
 import Vapor
 
 struct ThingList: Content {
-    var state: State
-    var list: [ThingSimple]
+    let state: State
+    let list: [ThingSimple]
 }
