@@ -2,6 +2,8 @@ import Vapor
 import Fluent
 
 struct ThingsController: RouteCollection {
+    private let jsonEncoder: JSONEncoder = JSONEncoder()
+
     func boot(routes: RoutesBuilder) throws {
         let things = routes.grouped("things")
         things.get(use: fetch)
@@ -47,21 +49,21 @@ struct ThingsController: RouteCollection {
         }
 
         return newThing.save(on: req.db).flatMapThrowing {
-            let header = ("Content-Type", "application/json; charset=utf-8")
+            let header: HTTPHeaders = ["Content-Type": "application/json; charset=utf-8"]
             
             let id = try newThing.requireID()
             let body = ["id": id]
-            let bodyJsonData = try JSONEncoder().encode(body)
+            let bodyJsonData = try jsonEncoder.encode(body)
             
             return Response(status: .created,
-                            headers: HTTPHeaders(dictionaryLiteral: header),
+                            headers: header,
                             body: .init(data: bodyJsonData))
         }
     }
 
     func update(req: Request) throws -> EventLoopFuture<HTTPResponseStatus> {
         try checkContentType(req)
-        let id = try verifyId(req)
+        let id = try verifyID(req)
         
         try ThingUpdate.validate(content: req)
         let thingUpdate = try req.content.decode(ThingUpdate.self)
@@ -91,7 +93,7 @@ struct ThingsController: RouteCollection {
 
     func delete(req: Request) throws -> EventLoopFuture<HTTPResponseStatus> {
         try checkContentType(req)
-        let id = try verifyId(req)
+        let id = try verifyID(req)
         
         return Thing.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
@@ -106,10 +108,10 @@ struct ThingsController: RouteCollection {
         }
     }
     
-    private func verifyId(_ req: Request) throws -> Int {
+    private func verifyID(_ req: Request) throws -> Int {
         guard let idInput = req.parameters.get("id"),
               let id = Int(idInput) else {
-            throw ThingError.invalidId
+            throw ThingError.invalidID
         }
         
         return id

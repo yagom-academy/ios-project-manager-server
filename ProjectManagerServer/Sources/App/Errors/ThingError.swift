@@ -1,20 +1,20 @@
 import Vapor
 
 enum ThingError {
-    case invalidId
+    case invalidID
 }
 
 extension ThingError: AbortError {
     var reason: String {
         switch self {
-        case .invalidId:
+        case .invalidID:
             return "ID is not integer"
         }
     }
 
     var status: HTTPStatus {
         switch self {
-        case .invalidId:
+        case .invalidID:
             return .badRequest
         }
     }
