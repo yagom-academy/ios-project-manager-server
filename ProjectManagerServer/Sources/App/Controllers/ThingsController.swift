@@ -26,12 +26,6 @@ struct ThingsController: RouteCollection {
                 lists.append(ThingList(state: key, list: thingSimples))
             }
             
-            State.allCases.forEach { state in
-                if group[state] == nil {
-                    lists.append(ThingList(state: state, list: []))
-                }
-            }
-            
             return lists
         }
     }
