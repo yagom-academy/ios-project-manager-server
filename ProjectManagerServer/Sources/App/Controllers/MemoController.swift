@@ -34,7 +34,7 @@ struct MemoController: RouteCollection {
         _ = Memo.query(on: request.db)
             .filter(\.$id == index)
             .first()
-            .unwrap(orError: Abort(.noContent))
+            .unwrap(orError: Abort(.notFound))
         
         let requestMemo = try request.content.decode(PatchMemo.self)
 
