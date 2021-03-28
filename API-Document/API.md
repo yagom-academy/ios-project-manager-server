@@ -144,18 +144,24 @@
 
 - PATCH /memo/{index}
 
-#### 메모 수정 요청 파라미터 예시
+#### 수정 가능 파라미터(개별 요청 가능)
+
+-   "title": 메모의 제목
+-   "description": 메모의 본문
+-   "date": 메모 마감일자
+-   "status": 메모의 상태
+
+#### 메모 수정 요청 파라미터 예시 1
 
 ```json
 {
     "title": "아침먹기",
     "description": "오늘의 아침은 순대국밥",
-    "date": "2020-04-03T00:00:00Z",
     "status": "todo"
 }
 ```
 
-#### 메모 수정 응답 파라미터 예시
+#### 메모 수정 응답 파라미터 예시 1
 
 ```json
 // PATCH /memo/{index}
@@ -164,6 +170,30 @@
     "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71AF10",
     "title": "아침먹기",
     "description": "오늘의 아침은 순대국밥",
+    "date": "2020-04-03T00:00:00Z",
+    "status": "todo"
+}
+```
+
+---
+
+#### 메모 수정 요청 파라미터 예시 2
+
+```json
+{
+    "description": "맛있는거 먹고 잘 쉬기",
+}
+```
+
+#### 메모 수정 응답 파라미터 예시 2
+
+```json
+// PATCH /memo/{index}
+// 200 OK
+{
+    "index": "48E2E85B-9FC4-4FA7-AE98-D0F2BE71AF10",
+    "title": "아침먹기",
+    "description": "맛있는거 먹고 잘 쉬기",
     "date": "2020-04-03T00:00:00Z",
     "status": "todo"
 }
