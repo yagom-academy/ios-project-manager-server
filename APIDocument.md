@@ -12,11 +12,11 @@
 
 | Name | Type | Description | Required|
 | -------- | -------- | -------- |---|
-| id | Number(Unsigend 되면 Unsigned로 바꾸기) | Thing의 고유한 id 값 ||
+| id | Number(Unsigend 되면 Unsigned로 바꾸기) | Thing의 고유한 id 값 |Required|
 | title | String | Thing의 제목 |Optional|
 | description | String | Thing의 세부내용 |Optional|
-| state | String or Number | Thing의 상태 ||
-| due_date | Number | Thing의 기한 ||
+| state | String or Number | Thing의 상태 |Required|
+| due_date | Number | Thing의 기한 |Required|
 | modification_date | Number | Thing이 수정된 날짜 |Optional|
 
 
