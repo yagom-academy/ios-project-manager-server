@@ -13,11 +13,11 @@
 | Name | Type | Description | Required|
 | -------- | -------- | -------- |---|
 | id | Number(Unsigend 되면 Unsigned로 바꾸기) | Thing의 고유한 id 값 |Required|
-| title | String | Thing의 제목 |Optional|
-| description | String | Thing의 세부내용 |Optional|
+| title | String? | Thing의 제목 |Optional|
+| description | String? | Thing의 세부내용 |Optional|
 | state | String or Number | Thing의 상태 |Required|
 | due_date | Number | Thing의 기한 |Required|
-| modification_date | Number | Thing이 수정된 날짜 |Optional|
+| modification_date | Number? | Thing이 수정된 날짜 |Optional|
 
 
 #### Sample
@@ -76,9 +76,9 @@
 
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
-| title | String | 새로운 Thing의 제목 | Optional |
-| description | String | 새로운 Thing의 세부내용 | Optional |
-| state | String or Number | 새로운 Thing의 상태 | Required |
+| title | String? | 새로운 Thing의 제목 | Optional |
+| description | String? | 새로운 Thing의 세부내용 | Optional |
+| state | String or Number | 새로운 Thing의 상태 (기본은 Todo) | Required |
 | due_date | Number | 새로운 Thing의 기한 | Required |
 ### Response
 
@@ -101,12 +101,20 @@
 |error_message|String|에러 메세지|Required|
 
 
+```json
+400 Error
+{
+	"error_message": "The essential thing is missing."  
+}
+```
+
 ## Thing 수정하기
+
 ### Start line
 
 | Method | URL  |Description|
 | - | -|---|
-| PATCH | /things |기존의 Thing을 수정한다.|
+| PATCH | /things or /things/:id |기존의 Thing을 수정한다.|
 ### Request
 | Content-Type                    |
 | ------------------------------- |
@@ -115,10 +123,10 @@
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
 |id|Number|수정할 Thing의 id 값|Required|
-| title | String | 수정할 Thing의 제목 | Optional |
-| description | String | 수정할 Thing의 세부내용 | Optional |
-| state | String or Number | 수정할 Thing의 상태 | Optional |
-| due_date | Number | 수정할 Thing의 기한 | Optional |
+| title | String? | 수정할 Thing의 제목 | Optional |
+| description | String? | 수정할 Thing의 세부내용 | Optional |
+| state | String? or Number? | 수정할 Thing의 상태 | Optional |
+| due_date | Number? | 수정할 Thing의 기한 | Optional |
 ### Response
 
 #### Success 
@@ -140,13 +148,35 @@
 | -------- | -------- | -------- | -------- |
 |error_message|String|에러 메세지|Required|
 
+|Status Code | Content-Type                    |
+|-| ------------------------------- |
+|404| application/json; charset=utf-8 |
+
+| Name | Type | Description | Required|
+| -------- | -------- | -------- | -------- |
+|error_message|String|에러 메세지|Required|
+
+
+```json
+400 Error
+{
+	"error_message": "The request is invalid."  
+}
+```
+```json
+404 Error
+{
+	"error_message": "Thing is Not Found."  
+}
+```
+
 ## Thing 삭제하기
 
 ### Start line
 
 | Method | URL  |Description|
 | - | -|---|
-| DELETE | /things |Thing을 삭제한다.|
+| DELETE | /things or /things/:id |Thing을 삭제한다.|
 ### Request
 | Content-Type                    |
 | ------------------------------- |
@@ -174,3 +204,17 @@
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
 |error_message|String|에러 메세지|Required|
+
+```json
+400 Error
+{
+	"error_message": "The request is invalid."  
+}
+```
+```json
+404 Error
+{
+	"error_message": "Thing is Not Found."  
+}
+```
+
