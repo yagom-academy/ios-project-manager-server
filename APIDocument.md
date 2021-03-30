@@ -64,21 +64,113 @@
 ```
 
 ## Thing 생성하기
+### Start line
+
+| Method | URL  |Description|
+| - | -|---|
+| POST | /things |새로운 Thing을 생성한다.|
 ### Request
-##### Headers
-| Content-Type                    | If-Modified-Since |
-| ------------------------------- | ----------------- |
-| application/json; charset=utf-8 |                   |
-##### Body
+| Content-Type                    |
+| ------------------------------- |
+| application/json; charset=utf-8 |
+
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
-|          |          |          |          |
-|          |          |          |          |
-|          |          |          |          |
-|          |          |          |          |
-|          |          |          |          |
+| title | String | 새로운 Thing의 제목 | Optional |
+| description | String | 새로운 Thing의 세부내용 | Optional |
+| state | String or Number | 새로운 Thing의 상태 | Required |
+| due_date | Number | 새로운 Thing의 기한 | Required |
+### Response
+
+#### Success 
+|Status Code | Content-Type                    |
+|-| ------------------------------- |-|
+|200| application/json; charset=utf-8 |
+
+| Name | Type | Description | Required|
+| -------- | -------- | -------- | -------- |
+|id|Number|새로 생성된 Thing의 id 값|Required|
+
+#### Failure
+|Status Code | Content-Type                    |
+|-| ------------------------------- |
+|400| application/json; charset=utf-8 |
+
+| Name | Type | Description | Required|
+| -------- | -------- | -------- | -------- |
+|error_message|String|에러 메세지|Required|
+
+
 ## Thing 수정하기
+### Start line
+
+| Method | URL  |Description|
+| - | -|---|
+| PATCH | /things |기존의 Thing을 수정한다.|
+### Request
+| Content-Type                    |
+| ------------------------------- |
+| application/json; charset=utf-8 |
+
+| Name | Type | Description | Required|
+| -------- | -------- | -------- | -------- |
+|id|Number|수정할 Thing의 id 값|Required|
+| title | String | 수정할 Thing의 제목 | Optional |
+| description | String | 수정할 Thing의 세부내용 | Optional |
+| state | String or Number | 수정할 Thing의 상태 | Optional |
+| due_date | Number | 수정할 Thing의 기한 | Optional |
+### Response
+
+#### Success 
+|Status Code | Content-Type                    |
+|-| ------------------------------- |-|
+|200| application/json; charset=utf-8 |
+
+| Name | Type | Description | Required|
+| -------- | -------- | -------- | -------- |
+|id|Number|수정된 Thing의 id 값|Required|
+|modification_date|Number|수정된 시간|Required|
+
+#### Failure
+|Status Code | Content-Type                    |
+|-| ------------------------------- |
+|400| application/json; charset=utf-8 |
+
+| Name | Type | Description | Required|
+| -------- | -------- | -------- | -------- |
+|error_message|String|에러 메세지|Required|
 
 ## Thing 삭제하기
 
+### Start line
 
+| Method | URL  |Description|
+| - | -|---|
+| DELETE | /things |Thing을 삭제한다.|
+### Request
+| Content-Type                    |
+| ------------------------------- |
+| application/json; charset=utf-8 |
+
+| Name | Type | Description | Required|
+| -------- | -------- | -------- | -------- |
+|id|Number|삭제할 Thing의 id 값|Required|
+### Response
+
+#### Success 
+|Status Code | Content-Type                    |
+|-| ------------------------------- |-|
+|200| application/json; charset=utf-8 |
+
+| Name | Type | Description | Required|
+| -------- | -------- | -------- | -------- |
+|id|Number|삭제된 Thing의 id 값|Required|
+
+#### Failure
+|Status Code | Content-Type                    |
+|-| ------------------------------- |
+|400| application/json; charset=utf-8 |
+
+| Name | Type | Description | Required|
+| -------- | -------- | -------- | -------- |
+|error_message|String|에러 메세지|Required|
