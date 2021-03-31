@@ -12,7 +12,7 @@
 
 | Name | Type | Description | Required|
 | -------- | -------- | -------- |---|
-| id | Number(Unsigend 되면 Unsigned로 바꾸기) | Thing의 고유한 id 값 |Required|
+| id | Number | Thing의 고유한 id 값 |Required|
 | title | String? | Thing의 제목 |Optional|
 | description | String? | Thing의 세부내용 |Optional|
 | state | String | Thing의 상태 |Required|
@@ -183,7 +183,7 @@
 
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
-| id | Number(Unsigend 되면 Unsigned로 바꾸기) | Thing의 고유한 id 값 |Required|
+| id | Number | Thing의 고유한 id 값 |Required|
 | title | String? | Thing의 제목 |Optional|
 | description | String? | Thing의 세부내용 |Optional|
 | state | String | Thing의 상태 |Required|
