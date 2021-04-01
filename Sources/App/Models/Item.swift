@@ -24,7 +24,7 @@ final class Item: Model, Content {
     
     init() { }
 
-    init(id: UUID? = nil, title: String, body: String, state: String, deadline: Number, last_modified: Number) {
+    init(id: UUID? = nil, title: String, body: String, state: String, deadline: Number? = nil, last_modified: Number) {
         self.id = id
         self.title = title
         self.body = body
