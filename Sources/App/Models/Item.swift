@@ -13,18 +13,27 @@ final class Item: Model, Content {
     @Field(key: "body")
     var body: String
     
-    @Field(key: "state")
-    var state: String
+    @Enum(key: "state")
+    var state: State
 
-    @Field(key: "deadline")
+    @Timestamp(key: "deadline")
     var deadline: Number?
     
-    @Field(key: "last_modified")
-    var last_modified: Number
+    @Timestamp(key: "last_modified", on: .update)
+    var last_modified: Number?
+    
+    enum State: String, Codable {
+        case toDo, doing, done
+    }
     
     init() { }
 
-    init(id: UUID? = nil, title: String, body: String, state: String, deadline: Number? = nil, last_modified: Number) {
+    init(id: UUID? = nil,
+         title: String,
+         body: String,
+         state: State,
+         deadline: Number? = nil,
+         last_modified: Number? = nil) {
         self.id = id
         self.title = title
         self.body = body
