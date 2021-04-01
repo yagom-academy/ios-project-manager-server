@@ -16,7 +16,7 @@ struct CreateItem: Migration {
                 .field("body", .string, .required)
                 .field("state", state, .required)
                 .field("deadline", .double)
-                .field("last_modified", .double, .required)
+                .field("last_modified", .datetime, .required)
                 .create()
         }
     }
