@@ -23,7 +23,7 @@ final class Item: Model, Content {
     var last_modified: Number?
     
     enum State: String, Codable {
-        case toDo, doing, done
+        case todo, doing, done
     }
     
     init() { }
