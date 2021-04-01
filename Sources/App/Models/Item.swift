@@ -17,10 +17,10 @@ final class Item: Model, Content {
     var state: State
 
     @Timestamp(key: "deadline")
-    var deadline: Number?
+    var deadline: Double?
     
     @Timestamp(key: "last_modified", on: .update)
-    var last_modified: Number?
+    var last_modified: Double?
     
     enum State: String, Codable {
         case todo, doing, done
@@ -32,8 +32,8 @@ final class Item: Model, Content {
          title: String,
          body: String,
          state: State,
-         deadline: Number? = nil,
-         last_modified: Number? = nil) {
+         deadline: Double? = nil,
+         last_modified: Double? = nil) {
         self.id = id
         self.title = title
         self.body = body
