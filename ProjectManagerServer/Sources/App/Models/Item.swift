@@ -30,9 +30,9 @@ final class Item: Model {
     
     init(id: UUID? = nil,
          title: String,
-         status: Status,
+         status: Int,
          description: String? = nil,
-         deadline: Date? = nil) {
+         deadline: Int? = nil) {
         self.id = id
         self.title = title
         self.status = status
