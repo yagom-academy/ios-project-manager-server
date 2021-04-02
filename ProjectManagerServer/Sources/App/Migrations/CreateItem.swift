@@ -17,7 +17,6 @@ struct ItemMigration: Migration {
                 .field("description", .string)
                 .field("deadline", .int)
                 .create()
-        }
     }
     
     func revert(on database: Database) -> EventLoopFuture<Void> {
