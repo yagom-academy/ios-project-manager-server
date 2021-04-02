@@ -13,8 +13,8 @@
 | Name | Type | Description | Required|
 | -------- | -------- | -------- |---|
 | id | Number | Thing의 고유한 id 값 |Required|
-| title | String? | Thing의 제목 |Optional|
-| description | String? | Thing의 세부내용 |Optional|
+| title | String | Thing의 제목 |Optional|
+| description | String | Thing의 세부내용 |Optional|
 | state | String | Thing의 상태 |Required|
 | due_date | Number | Thing의 기한 |Required|
 | updated_at | Number | Thing이 생성된 시간 |Required|
@@ -66,22 +66,22 @@
 
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
-| title | String? | 새로운 Thing의 제목 | Optional |
-| description | String? | 새로운 Thing의 세부내용 | Optional |
+| title | String | 새로운 Thing의 제목 | Optional |
+| description | String | 새로운 Thing의 세부내용 | Optional |
 | state | String | 새로운 Thing의 상태 (기본은 Todo) | Required |
 | due_date | Number | 새로운 Thing의 기한 | Required |
 ### Response
 
 #### Success
 |Status Code | Content-Type                    |
-|-| ------------------------------- |-|
+|-| ------------------------------- |
 |200| application/json; charset=utf-8 |
 
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
 |id|Number|새로 생성된 Thing의 id 값|Required|
-| title | String? | 새로운 Thing의 제목 | Optional |
-| description | String? | 새로운 Thing의 세부내용 | Optional |
+| title | String | 새로운 Thing의 제목 | Optional |
+| description | String | 새로운 Thing의 세부내용 | Optional |
 | state | String | 새로운 Thing의 상태 (기본은 Todo) | Required |
 | due_date | Number | 새로운 Thing의 기한 | Required |
 #### Failure
@@ -115,24 +115,24 @@
 
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
-| title | String? | 수정할 Thing의 제목 | Optional |
-| description | String? | 수정할 Thing의 세부내용 | Optional |
-| state | String? or Number? | 수정할 Thing의 상태 | Optional |
-| due_date | Number? | 수정할 Thing의 기한 | Optional |
+| title | String | 수정할 Thing의 제목 | Optional |
+| description | String | 수정할 Thing의 세부내용 | Optional |
+| state | String | 수정할 Thing의 상태 | Optional |
+| due_date | Number | 수정할 Thing의 기한 | Optional |
 ### Response
 
 #### Success 
 |Status Code | Content-Type                    |
-|-| ------------------------------- |-|
+|-| ------------------------------- |
 |200| application/json; charset=utf-8 |
 
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
 |id|Number|수정된 Thing의 id 값|Required|
-| title | String? | 수정할 Thing의 제목 | Optional |
-| description | String? | 수정할 Thing의 세부내용 | Optional |
-| state | String? or Number? | 수정할 Thing의 상태 | Optional |
-| due_date | Number? | 수정할 Thing의 기한 | Optional |
+| title | String | 수정할 Thing의 제목 | Optional |
+| description | String | 수정할 Thing의 세부내용 | Optional |
+| state | String | 수정할 Thing의 상태 | Optional |
+| due_date | Number | 수정할 Thing의 기한 | Optional |
 |updated_at|Number|수정된 시간|Required|
 
 #### Failure
@@ -178,14 +178,14 @@
 
 #### Success 
 |Status Code | Content-Type                    |
-|-| ------------------------------- |-|
+|-| ------------------------------- |
 |200| application/json; charset=utf-8 |
 
 | Name | Type | Description | Required|
 | -------- | -------- | -------- | -------- |
 | id | Number | Thing의 고유한 id 값 |Required|
-| title | String? | Thing의 제목 |Optional|
-| description | String? | Thing의 세부내용 |Optional|
+| title | String | Thing의 제목 |Optional|
+| description | String | Thing의 세부내용 |Optional|
 | state | String | Thing의 상태 |Required|
 | due_date | Number | Thing의 기한 |Required|
 | updated_at | Number | Thing이 삭제된 시간 |Required|
