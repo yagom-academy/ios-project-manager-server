@@ -4,8 +4,8 @@ import Vapor
 final class Item: Model, Content {
     static let schema = "items"
     
-    @ID(custom: "id", generatedBy: .database)
-    var id: Int?
+    @ID(key: .id)
+    var id: UUID?
 
     @Field(key: "title")
     var title: String
@@ -24,7 +24,7 @@ final class Item: Model, Content {
     
     init() { }
 
-    init(id: Int? = nil,
+    init(id: UUID? = nil,
          title: String,
          body: String,
          state: State,
