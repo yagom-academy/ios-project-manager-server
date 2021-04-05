@@ -22,10 +22,6 @@ final class Item: Model, Content {
     @Timestamp(key: "last_modified", on: .update)
     var last_modified: Date?
     
-    enum State: String, Codable, CaseIterable {
-        case todo, doing, done
-    }
-    
     init() { }
 
     init(id: UUID? = nil,
