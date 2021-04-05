@@ -6,7 +6,7 @@ final class Item: Model, Content {
     
     @ID(key: .id)
     var id: UUID?
-
+    
     @Field(key: "title")
     var title: String
     
@@ -22,7 +22,7 @@ final class Item: Model, Content {
     @Timestamp(key: "last_modified", on: .update)
     var last_modified: Date?
     
-    enum State: String, Codable {
+    enum State: String, Codable, CaseIterable {
         case todo, doing, done
     }
     
@@ -47,7 +47,7 @@ extension Item: Validatable {
     static func validations(_ validations: inout Validations) {
         validations.add("title", as: String.self, is: .count(...500))
         validations.add("body", as: String.self, is: .count(...1000))
-        validations.add("state", as: String.self, is: .in("todo", "doing", "done"))
+        validations.add("state", as: String.self, is: .in(State.allCases.map { $0.rawValue }))
         validations.add("deadline", as: Double?.self, required: false)
     }
 }
