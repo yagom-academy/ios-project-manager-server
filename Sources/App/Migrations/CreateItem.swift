@@ -10,7 +10,7 @@ struct CreateItem: Migration {
             .create()
         
         return database.enum("state").read().flatMap { state in
-            database.schema("items")
+            database.schema(Item.schema)
                 .id()
                 .field("title", .string, .required)
                 .field("body", .string, .required)
@@ -22,6 +22,6 @@ struct CreateItem: Migration {
     }
     
     func revert(on database: Database) -> EventLoopFuture<Void> {
-        return database.schema("items").delete()
+        return database.schema(Item.schema).delete()
     }
 }
