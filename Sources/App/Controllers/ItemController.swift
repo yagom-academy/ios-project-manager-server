@@ -9,7 +9,7 @@ struct ItemController: RouteCollection {
         let item = routes.grouped("item")
         item.post(use: create)
 //        item.patch(":id", use: update)
-//        item.delete(":id", use: delete)
+        item.delete(":id", use: delete)
     }
     
     private func readAll(req: Request) throws -> EventLoopFuture<[ItemList]> {
@@ -38,13 +38,14 @@ struct ItemController: RouteCollection {
 //        return item.update(on: req.db).map { item }
 //    }
 //
-//    private func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
-//        try checkContentType(req.headers.contentType)
-//        return Item.find(req.parameters.get("itemID"), on: req.db)
-//            .unwrap(or: Abort(.notFound))
-//            .flatMap { $0.delete(on: req.db) }
-//            .transform(to: .ok)
-//    }
+    private func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+        try checkContentType(req.headers.contentType)
+        let id = try checkID(req)
+        return Item.find(id, on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMap { $0.delete(on: req.db) }
+            .transform(to: .ok)
+    }
     
     private func checkContentType(_ contentType: HTTPMediaType?) throws {
         guard let contentType = contentType, contentType == .json else {
