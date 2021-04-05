@@ -20,6 +20,6 @@ public func configure(_ app: Application) throws {
     }
     
     app.migrations.add(CreateItem())
-    
+    try app.autoMigrate().wait()
     try routes(app)
 }
