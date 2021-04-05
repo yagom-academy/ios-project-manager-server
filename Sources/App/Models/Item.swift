@@ -5,7 +5,7 @@ final class Item: Model, Content {
     static let schema = "items"
     
     @ID(key: .id)
-    var id: UUID?
+    let id: UUID?
 
     @Field(key: "title")
     var title: String
