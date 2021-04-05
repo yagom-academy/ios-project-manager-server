@@ -42,3 +42,12 @@ final class Item: Model, Content {
         self.last_modified = last_modified
     }
 }
+
+extension Item: Validatable {
+    static func validations(_ validations: inout Validations) {
+        validations.add("title", as: String.self, is: .count(...500))
+        validations.add("body", as: String.self, is: .count(...1000))
+        validations.add("status", as: String.self, is: .in("todo", "doing", "done"))
+        validations.add("deadline", as: Double?.self, required: false)
+    }
+}

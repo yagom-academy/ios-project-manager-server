@@ -16,6 +16,7 @@ struct ItemController: RouteCollection {
     }
 
     func create(req: Request) throws -> EventLoopFuture<Item> {
+        try Item.validate(content: req)
         let item = try req.content.decode(Item.self)
         return item.save(on: req.db).map { item }
     }
