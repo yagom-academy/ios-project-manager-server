@@ -4,14 +4,14 @@ import Vapor
 struct ItemController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let items = routes.grouped("items")
-        items.get(use: index)
+        items.get(use: readAll)
         items.post(use: create)
         items.group(":itemID") { item in
             items.delete(use: delete)
         }
     }
 
-    func index(req: Request) throws -> EventLoopFuture<[Item]> {
+    func readAll(req: Request) throws -> EventLoopFuture<[Item]> {
         return Item.query(on: req.db).all()
     }
 
