@@ -19,12 +19,6 @@ public func configure(_ app: Application) throws {
         ), as: .psql)
     }
     
-//    app.databases.use(.postgres(hostname: "localhost",
-//                                username: "llim",
-//                                password: "",
-//                                database: "items"),
-//                      as: .psql)    
-    
     app.migrations.add(CreateItem())
     
     try routes(app)
