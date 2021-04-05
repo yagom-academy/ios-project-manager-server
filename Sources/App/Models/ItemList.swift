@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct ThingList: Content {
+     var state: State
+     var list: [Item]
+ }
