@@ -40,3 +40,5 @@ final class Item: Model {
         self.deadline = deadline
     }
 }
+
+extension Item: Content { }
