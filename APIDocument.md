@@ -30,7 +30,7 @@
       "description": "Homebrew를 통해 Vapor Toolbox 설치하기",
       "state": "todo",
       "due_date": 1611523563.719116,
-      "modification_date": 1611523563.719116,
+      "updated_at": 1611523563.719116,
     }
     ,
     {
@@ -39,7 +39,7 @@
       "description": null,
       "state": "doing",
       "due_date": 16115462413.28349,
-      "modification_date": 16115462413.28349,
+      "updated_at": 16115462413.28349,
     }
     ,
     {
@@ -48,7 +48,7 @@
       "description": null,
       "state": "doing",
       "due_date": 1611598271.28371,
-      "modification_date": 1611598271.28371,
+      "updated_at": 1611598271.28371,
     }
 ]
 ```
