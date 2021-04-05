@@ -45,4 +45,17 @@ struct ItemController: RouteCollection {
             .flatMap { $0.delete(on: req.db) }
             .transform(to: .ok)
     }
+    
+    private func checkContentType(_ contentType: HTTPMediaType?) throws {
+        guard let contentType = contentType, contentType == .json else {
+            throw Abort(.unsupportedMediaType)
+        }
+    }
+    
+    private func checkID(_ req: Request) throws -> Int {
+        guard let parameterID = req.parameters.get("id"), let id = Int(parameterID) else {
+            throw Abort(.notFound)
+        }
+        return id
+    }
 }
