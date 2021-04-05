@@ -40,7 +40,11 @@ struct ItemController: RouteCollection {
 //
     private func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
         try checkContentType(req.headers.contentType)
-        let id = try checkID(req)
+        
+        guard let id = UUID(uuidString: req.parameters.get("id")!) else {
+                    throw Abort(.badRequest)
+                }
+        
         return Item.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMap { $0.delete(on: req.db) }
@@ -53,10 +57,10 @@ struct ItemController: RouteCollection {
         }
     }
     
-    private func checkID(_ req: Request) throws -> Int {
-        guard let parameterID = req.parameters.get("id"), let id = Int(parameterID) else {
-            throw Abort(.notFound)
-        }
-        return id
-    }
+//    private func checkID(_ req: Request) throws -> Int {
+//        guard let parameterID = req.parameters.get("id"), let id = Int(parameterID) else {
+//            throw Abort(.notFound)
+//        }
+//        return id
+//    }
 }
