@@ -2,6 +2,8 @@ import Fluent
 import Vapor
 
 struct ItemController: RouteCollection {
+    private let jsonEncoder: JSONEncoder = JSONEncoder()
+
     func boot(routes: RoutesBuilder) throws {
         let items = routes.grouped("items")
         items.get(use: readAll)
@@ -24,11 +26,24 @@ struct ItemController: RouteCollection {
         }
     }
     
-    private func create(req: Request) throws -> EventLoopFuture<Item> {
+    private func create(req: Request) throws -> EventLoopFuture<Response> {
         try checkContentType(req.headers.contentType)
-        try Item.validate(content: req)
-        let item = try req.content.decode(Item.self)
-        return Item.save(on: req.db).map { item }
+        try NewItem.validate(content: req)
+        let newItem = try req.content.decode(NewItem.self)
+        
+        let item = Item(title: newItem.title,
+                        body: newItem.body,
+                        state: newItem.state,
+                        deadline: newItem.deadline)
+        
+        return item.save(on: req.db).flatMapThrowing {
+            let header: HTTPHeaders = ["Content-Type": "application/json; charset=utf-8"]
+            let body = try jsonEncoder.encode(item)
+            
+            return Response(status: .created,
+                            headers: header,
+                            body: .init(data: body))
+        }
     }
     
 //    private func update(req: Request) throws -> EventLoopFuture<Item> {
