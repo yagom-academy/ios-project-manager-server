@@ -104,7 +104,7 @@ struct ItemController: RouteCollection {
     
     private func checkID(_ req: Request) throws -> Int {
         guard let parameterID = req.parameters.get("id"), let id = Int(parameterID) else {
-            throw Abort(.notFound)
+            throw ThingError.invalidID
         }
         return id
     }
