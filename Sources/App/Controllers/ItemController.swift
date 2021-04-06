@@ -11,7 +11,7 @@ struct ItemController: RouteCollection {
         
         let item = routes.grouped("item")
         item.post(use: create)
-//        item.patch(":id", use: update)
+        item.patch(":id", use: update)
         item.delete(":id", use: delete)
     }
     
@@ -45,13 +45,40 @@ struct ItemController: RouteCollection {
         }
     }
     
-//    private func update(req: Request) throws -> EventLoopFuture<Item> {
-//        try checkContentType(req.headers.contentType)
-//        try Item.validate(content: req)
-//        let item = try req.content.decode(Item.self)
-//        return Item.update(on: req.db).map { item }
-//    }
-//
+    private func update(req: Request) throws -> EventLoopFuture<Response> {
+        try checkContentType(req.headers.contentType)
+        let id = try checkID(req)
+
+        try EditedItem.validate(content: req)
+        let editedItem = try req.content.decode(EditedItem.self)
+        
+        return Item.find(id, on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMapThrowing { item in
+                if let title = editedItem.title {
+                    item.title = title
+                }
+                
+                if let body = editedItem.body {
+                    item.body = body
+                }
+                
+                if let deadline = editedItem.deadline {
+                    item.deadline = deadline
+                }
+                
+                if let state = editedItem.state {
+                    item.state = state
+                }
+                item.save(on: req.db)
+                
+                let body = try jsonEncoder.encode(item)
+                return Response(status: .ok,
+                                headers: header,
+                                body: .init(data: body))
+            }
+    }
+    
     private func delete(req: Request) throws -> EventLoopFuture<Response> {
         try checkContentType(req.headers.contentType)
         let id = try checkID(req)
@@ -59,7 +86,7 @@ struct ItemController: RouteCollection {
         return Item.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMapThrowing { item in
-                todo.delete(on: req.db)
+                item.delete(on: req.db)
                 let body = try jsonEncoder.encode(item)
                 return Response(status: .ok,
                                 headers: header,
