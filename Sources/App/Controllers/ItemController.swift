@@ -28,14 +28,14 @@ struct ItemController: RouteCollection {
         try checkContentType(req.headers.contentType)
         try Item.validate(content: req)
         let item = try req.content.decode(Item.self)
-        return item.save(on: req.db).map { item }
+        return Item.save(on: req.db).map { item }
     }
     
 //    private func update(req: Request) throws -> EventLoopFuture<Item> {
 //        try checkContentType(req.headers.contentType)
 //        try Item.validate(content: req)
 //        let item = try req.content.decode(Item.self)
-//        return item.update(on: req.db).map { item }
+//        return Item.update(on: req.db).map { item }
 //    }
 //
     private func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
