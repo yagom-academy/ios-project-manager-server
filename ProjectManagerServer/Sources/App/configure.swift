@@ -10,5 +10,8 @@ public func configure(_ app: Application) throws {
         ), as: .psql)
     } else {
     }
+    
+    app.migrations.add(CreateThing())
+    
     try routes(app)
 }
