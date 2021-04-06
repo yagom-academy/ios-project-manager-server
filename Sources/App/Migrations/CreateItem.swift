@@ -11,7 +11,7 @@ struct CreateItem: Migration {
         
         return database.enum("state").read().flatMap { state in
             database.schema(Item.schema)
-                .id()
+                .field("id", .custom("serial"))
                 .field("title", .string, .required)
                 .field("body", .string, .required)
                 .field("state", state, .required)
