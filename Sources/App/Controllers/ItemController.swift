@@ -3,7 +3,8 @@ import Vapor
 
 struct ItemController: RouteCollection {
     private let jsonEncoder: JSONEncoder = JSONEncoder()
-
+    private let header: HTTPHeaders = ["Content-Type": "application/json; charset=utf-8"]
+    
     func boot(routes: RoutesBuilder) throws {
         let items = routes.grouped("items")
         items.get(use: readAll)
@@ -37,9 +38,7 @@ struct ItemController: RouteCollection {
                         deadline: newItem.deadline)
         
         return item.save(on: req.db).flatMapThrowing {
-            let header: HTTPHeaders = ["Content-Type": "application/json; charset=utf-8"]
             let body = try jsonEncoder.encode(item)
-            
             return Response(status: .created,
                             headers: header,
                             body: .init(data: body))
@@ -53,13 +52,19 @@ struct ItemController: RouteCollection {
 //        return Item.update(on: req.db).map { item }
 //    }
 //
-    private func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+    private func delete(req: Request) throws -> EventLoopFuture<Response> {
         try checkContentType(req.headers.contentType)
         let id = try checkID(req)
+        
         return Item.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
-            .flatMap { $0.delete(on: req.db) }
-            .transform(to: .ok)
+            .flatMapThrowing { item in
+                todo.delete(on: req.db)
+                let body = try jsonEncoder.encode(item)
+                return Response(status: .ok,
+                                headers: header,
+                                body: .init(data: body))
+            }
     }
     
     private func checkContentType(_ contentType: HTTPMediaType?) throws {
