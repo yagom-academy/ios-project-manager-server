@@ -19,7 +19,7 @@ final class Item: Model, Content {
     @OptionalField(key: "deadline")
     var deadline: Double?
     
-    @Timestamp(key: "last_modified", on: .update)
+    @Timestamp(key: "last_modified", on: .update, format: .unixl)
     var last_modified: Date?
     
     init() { }
