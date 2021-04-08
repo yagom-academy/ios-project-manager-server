@@ -3,7 +3,7 @@ import Fluent
 
 struct ThingController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let things = routes.grouped("things")
+        let things = routes.grouped(Thing.schema.pathComponents)
         things.get(use: showAll)
         things.post(use: create)
         things.group(":id") { things in

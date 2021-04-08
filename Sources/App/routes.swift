@@ -5,5 +5,11 @@ func routes(_ app: Application) throws {
         return "It works!"
     }
     
+    /// URL: /things
+    /// GET: 전체 thing 반환
+    /// POST: 새로운 thing 생성
+    /// DELETE: 해당 thing 삭제
+    /// PATCH: 해당 thing 수정
+    
     try app.register(collection: ThingController())
 }
