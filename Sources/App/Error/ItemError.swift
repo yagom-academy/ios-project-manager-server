@@ -14,11 +14,13 @@ enum ItemError: AbortError {
         switch self {
         case .invalidID:
             return "ID must be integer type."
+        }
     }
     
     var status: HTTPStatus {
         switch self {
         case .invalidID:
             return .badRequest
+        }
     }
 }
