@@ -16,15 +16,18 @@ struct ItemController: RouteCollection {
     }
     
     // Todo: header 포함해서 보내기, last_modifed double로 내려주기
-    private func readAll(req: Request) throws -> EventLoopFuture<[ItemList]> {
+    private func readAll(req: Request) throws -> EventLoopFuture<Response> {
         try checkContentType(req.headers.contentType)
-        return Item.query(on: req.db).all().map { things -> [ItemList] in
+        return Item.query(on: req.db).all().flatMapThrowing { things in
             let group = Dictionary(grouping: things, by: { $0.state })
             var lists: [ItemList] = []
             for (key, value) in group {
                 lists.append(ItemList(state: key, list: value))
             }
-            return lists
+            let body = try jsonEncoder.encode(lists)
+            return Response(status: .created,
+                            headers: header,
+                            body: .init(data: body))
         }
     }
     
@@ -104,7 +107,7 @@ struct ItemController: RouteCollection {
     
     private func checkID(_ req: Request) throws -> Int {
         guard let parameterID = req.parameters.get("id"), let id = Int(parameterID) else {
-            throw ThingError.invalidID
+            throw ItemError.invalidID
         }
         return id
     }
