@@ -7,7 +7,6 @@ struct CreateThing: Migration {
             .case("doing")
             .case("done")
             .create()
-        
         return database.enum("state").read().flatMap { state in
             database.schema("things")
                 .id()
