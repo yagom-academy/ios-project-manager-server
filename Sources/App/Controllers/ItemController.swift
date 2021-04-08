@@ -25,7 +25,7 @@ struct ItemController: RouteCollection {
                 lists.append(ItemList(state: key, list: value))
             }
             let body = try jsonEncoder.encode(lists)
-            return Response(status: .created,
+            return Response(status: .ok,
                             headers: header,
                             body: .init(data: body))
         }

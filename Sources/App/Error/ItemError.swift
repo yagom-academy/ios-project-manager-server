@@ -13,7 +13,7 @@ enum ItemError: AbortError {
     var reason: String {
         switch self {
         case .invalidID:
-            return "ID must be integer type."
+            return "id is not a(n) Integer"
         }
     }
     
