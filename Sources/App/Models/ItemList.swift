@@ -8,6 +8,6 @@
 import Vapor
 
 struct ItemList: Content {
-     var state: State
-     var list: [Item]
+     let state: State
+     let list: [Item]
  }
