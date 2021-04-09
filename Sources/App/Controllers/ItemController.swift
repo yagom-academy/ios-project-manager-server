@@ -74,7 +74,6 @@ struct ItemController: RouteCollection {
     }
     
     private func delete(req: Request) throws -> EventLoopFuture<Response> {
-        try checkContentType(req.headers.contentType)
         let id = try checkID(req)
         
         return Item.find(id, on: req.db)
