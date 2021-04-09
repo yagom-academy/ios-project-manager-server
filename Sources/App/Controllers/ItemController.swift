@@ -15,7 +15,6 @@ struct ItemController: RouteCollection {
         item.delete(":id", use: delete)
     }
     
-    // Todo: header 포함해서 보내기, last_modifed double로 내려주기
     private func readAll(req: Request) throws -> EventLoopFuture<Response> {
         try checkContentType(req.headers.contentType)
         return Item.query(on: req.db).all().flatMapThrowing { things in
@@ -49,7 +48,6 @@ struct ItemController: RouteCollection {
         }
     }
     
-    // update 잘되는건지 모르겠음
     private func update(req: Request) throws -> EventLoopFuture<Response> {
         try checkContentType(req.headers.contentType)
         let id = try checkID(req)
