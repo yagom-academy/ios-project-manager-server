@@ -32,14 +32,9 @@ struct ItemController: RouteCollection {
     
     private func create(req: Request) throws -> EventLoopFuture<Response> {
         try checkContentType(req.headers.contentType)
-        try NewItem.validate(content: req)
-        let newItem = try req.content.decode(NewItem.self)
-        
-        let item = Item(title: newItem.title,
-                        body: newItem.body,
-                        state: newItem.state,
-                        deadline: newItem.deadline)
-        
+        try Item.validate(content: req)
+        let item = try req.content.decode(Item.self)
+
         return item.save(on: req.db).flatMapThrowing {
             let body = try jsonEncoder.encode(item)
             return Response(status: .created,
@@ -61,15 +56,12 @@ struct ItemController: RouteCollection {
                 if let title = editedItem.title {
                     item.title = title
                 }
-                
                 if let body = editedItem.body {
                     item.body = body
                 }
-                
                 if let deadline = editedItem.deadline {
                     item.deadline = deadline
                 }
-                
                 if let state = editedItem.state {
                     item.state = state
                 }
