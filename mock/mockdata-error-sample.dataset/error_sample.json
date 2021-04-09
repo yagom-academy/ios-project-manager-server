@@ -1,3 +1,4 @@
 {
-    "error": "mock data 오류입니다."
+     "error": true,
+     "reason": "Unsupported Media Type"
 }
