@@ -2,8 +2,10 @@ import Vapor
 import Fluent
 
 struct ThingController: RouteCollection {
+    let url: String
+    
     func boot(routes: RoutesBuilder) throws {
-        let things = routes.grouped(Thing.schema.pathComponents)
+        let things = routes.grouped("\(url)")
         things.get(use: showAll)
         things.post(use: create)
         things.group(":id") { things in

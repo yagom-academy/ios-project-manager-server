@@ -11,5 +11,6 @@ func routes(_ app: Application) throws {
     /// DELETE: 해당 thing 삭제
     /// PATCH: 해당 thing 수정
     
-    try app.register(collection: ThingController())
+func routes(_ app: Application) throws {    
+    try app.register(collection: ThingController(url: "things"))
 }
