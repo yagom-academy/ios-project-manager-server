@@ -18,6 +18,11 @@ struct ThingController: RouteCollection {
     }
     
     func create(req: Request) throws -> EventLoopFuture<Thing> {
+        do {
+            try Thing.validate(content: req)
+        } catch {
+            
+        }
         let thing = try req.content.decode(Thing.self)
         return thing.create(on: req.db).map { thing }
     }
