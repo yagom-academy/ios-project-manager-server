@@ -35,8 +35,8 @@ struct ThingController: RouteCollection {
     }
     
     private func isApplicationJSONAndUTF8(_ contentType: HTTPMediaType) -> Bool {
-        if req.content.contentType?.type == "application" && req.content.contentType?.subType == "json" &&
-            req.content.contentType?.parameters["charset"] == "utf8" {
+        if contentType.type == "application" && contentType.subType == "json" &&
+            contentType.parameters["charset"] == "utf8" {
             return true
         }
         return false
