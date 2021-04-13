@@ -46,6 +46,6 @@ final class Thing: Model, Content {
 extension Thing: Validatable {
     static func validations(_ validations: inout Validations) {
         validations.add("state", as: String.self, is: .in("todo", "doing", "done"), required: true)
-        validations.add("description", as: String?.self, is: .count(...1000), required: false)
+        validations.add("description", as: String.self, is: .count(...1000), required: false)
     }
 }
