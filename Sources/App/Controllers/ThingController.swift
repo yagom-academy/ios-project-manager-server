@@ -33,4 +33,12 @@ struct ThingController: RouteCollection {
             .flatMap { $0.delete(on: req.db) }
             .transform(to: .ok)
     }
+    
+    private func isApplicationJSONAndUTF8(_ contentType: HTTPMediaType) -> Bool {
+        if req.content.contentType?.type == "application" && req.content.contentType?.subType == "json" &&
+            req.content.contentType?.parameters["charset"] == "utf8" {
+            return true
+        }
+        return false
+    }
 }
