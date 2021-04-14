@@ -24,25 +24,27 @@ struct ThingController: RouteCollection {
         return thing.create(on: req.db).map { thing }
     }
     
-    func update(req: Request) throws -> EventLoopFuture<HTTPStatus> {
-        let thing = try req.content.decode(ThingToUpdate.self)
-        let thingToUpdate = Thing.find(req.parameters.get("id"), on: req.db).unwrap(or: ThingError.notFoundID)
-        let result = thingToUpdate.map {
-            if let title = thing.title {
+    func update(req: Request) throws -> EventLoopFuture<Thing> {
+        let thingToUpdate = try req.content.decode(ThingToUpdate.self)
+        var id: UUID?
+        Thing.find(req.parameters.get("id"), on: req.db).unwrap(or: ThingError.notFoundID).map {
+            if let title = thingToUpdate.title {
                 $0.title = title
             }
-            if let description = thing.description {
+            if let description = thingToUpdate.description {
                 $0.description = description
             }
-            if let state = thing.state {
+            if let state = thingToUpdate.state {
                 $0.state = state
             }
-            if let dueDate = thing.dueDate {
+            if let dueDate = thingToUpdate.dueDate {
                 $0.dueDate = dueDate
             }
+            id = $0.id
             $0.update(on: req.db)
         }
-        return result.transform(to: .ok)
+        let updateResult = Thing.find(id, on: req.db).unwrap(or: Abort(.notFound))
+        return updateResult
     }
     
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
