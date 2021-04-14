@@ -26,7 +26,7 @@ struct ThingController: RouteCollection {
     
     func update(req: Request) throws -> EventLoopFuture<Thing> {
         let thingToUpdate = try req.content.decode(ThingToUpdate.self)
-        Thing.find(req.parameters.get("id"), on: req.db).unwrap(or: ThingError.notFoundID).map {
+        return Thing.find(req.parameters.get("id"), on: req.db).unwrap(or: ThingError.notFoundID).map {
             if let title = thingToUpdate.title {
                 $0.title = title
             }
@@ -40,9 +40,8 @@ struct ThingController: RouteCollection {
                 $0.dueDate = dueDate
             }
             $0.update(on: req.db)
+            return Thing(id: $0.id, title: $0.title, description: $0.description, state: $0.state, dueDate: $0.dueDate, updatedAt: $0.updatedAt)
         }
-        let updateResult = Thing.find(req.parameters.get("id"), on: req.db).unwrap(or: Abort(.notFound))
-        return updateResult
     }
     
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
