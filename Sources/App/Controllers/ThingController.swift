@@ -39,6 +39,7 @@ struct ThingController: RouteCollection {
             if let dueDate = thingToUpdate.dueDate {
                 $0.dueDate = dueDate
             }
+            $0.updatedAt = Date()
             $0.update(on: req.db)
             return Thing(id: $0.id, title: $0.title, description: $0.description, state: $0.state, dueDate: $0.dueDate, updatedAt: $0.updatedAt)
         }
