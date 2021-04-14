@@ -45,11 +45,13 @@ struct ThingController: RouteCollection {
         }
     }
     
-    func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+    func delete(req: Request) throws -> EventLoopFuture<Thing> {
         return Thing.find(req.parameters.get("id"), on: req.db)
             .unwrap(or: Abort(.notFound))
-            .flatMap { $0.delete(on: req.db) }
-            .transform(to: .ok)
+            .map {
+                $0.delete(on: req.db)
+                return Thing(id: $0.id, title: $0.title, description: $0.description, state: $0.state, dueDate: $0.dueDate, updatedAt: $0.updatedAt)
+            }
     }
     
     private func isApplicationJSONAndUTF8(_ contentType: HTTPMediaType) -> Bool {
