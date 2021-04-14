@@ -8,6 +8,7 @@ struct ThingController: RouteCollection {
         let things = routes.grouped("\(url)")
         things.get(use: showAll)
         things.post(use: create)
+        things.patch(use: update)
         things.group(":id") { things in
             things.delete(use: delete)
         }
@@ -21,6 +22,27 @@ struct ThingController: RouteCollection {
         try Thing.validate(content: req)
         let thing = try req.content.decode(Thing.self)
         return thing.create(on: req.db).map { thing }
+    }
+    
+    func update(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+        let thing = try req.content.decode(ThingToUpdate.self)
+        let thingToUpdate = Thing.find(req.parameters.get("id"), on: req.db).unwrap(or: ThingError.notFoundID)
+        let result = thingToUpdate.map {
+            if let title = thing.title {
+                $0.title = title
+            }
+            if let description = thing.description {
+                $0.description = description
+            }
+            if let state = thing.state {
+                $0.state = state
+            }
+            if let dueDate = thing.dueDate {
+                $0.dueDate = dueDate
+            }
+            $0.update(on: req.db)
+        }
+        return result.transform(to: .ok)
     }
     
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
