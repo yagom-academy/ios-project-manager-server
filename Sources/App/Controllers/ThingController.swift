@@ -8,9 +8,9 @@ struct ThingController: RouteCollection {
         let things = routes.grouped("\(url)")
         things.get(use: showAll)
         things.post(use: create)
-        things.patch(use: update)
         things.group(":id") { things in
             things.delete(use: delete)
+            things.patch(use: update)
         }
     }
     
