@@ -46,6 +46,7 @@ final class AppTests: XCTestCase {
         
         try app.test(.POST, "item", headers: header, body: body) { res in
             XCTAssertEqual(res.status, .created)
+            XCTAssertEqual(res.headers.contentType, .json)
         }
     }
     
@@ -87,6 +88,7 @@ final class AppTests: XCTestCase {
         
         try app.test(.PATCH, "item", headers: header, body: body) { res in
             XCTAssertEqual(res.status, .notFound)
+            XCTAssertEqual(res.headers.contentType, .json)
         }
     }
     
