@@ -105,7 +105,7 @@ struct ItemController: RouteCollection {
         guard let accessToken = try? req.query.decode(AccessToken.self) else {
             throw ItemError.noAccessToken
         }
-        if accessToken.key != "zziruru_taetae_cheer_up" {
+        if accessToken.key != AccessKey.key {
             throw ItemError.invalidAccessKey
         }
     }
