@@ -26,4 +26,17 @@ final class AppTests: XCTestCase {
             XCTAssertEqual(res.status, .notFound)
         })
     }
+
+    func testPostSuccessCase() throws {
+        let app = Application(.testing)
+        defer { app.shutdown() }
+        try configure(app)
+
+        let item = Item(title: "title", body: "body", state: .todo, deadline: nil)
+        let body = try jsonEncoder.encodeAsByteBuffer(item, allocator: ByteBufferAllocator())
+        
+        try app.test(.POST, "item", headers: header, body: body) { res in
+            XCTAssertEqual(res.status, .created)
+        }
+    }
 }
