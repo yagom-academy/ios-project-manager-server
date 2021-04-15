@@ -153,3 +153,5 @@ DerivedData/
 db.sqlite
 .swiftpm
 
+Sources/App/Models/AccessToken.swift
+Sources/App/Models/DatabaseInformation.swift
