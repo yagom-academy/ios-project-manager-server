@@ -6,6 +6,15 @@ final class AppTests: XCTestCase {
     let jsonEncoder = JSONEncoder()
     let header: HTTPHeaders = ["Content-Type": "application/json; charset=utf-8"]
     
+    struct TestItem: Content {
+        var id: Int?
+        var title: String
+        var body: String
+        var state: State
+        var deadline: Double?
+        var last_modified: Double?
+    }
+    
     func testGetSuccessCase() throws {
         let app = Application(.testing)
         defer { app.shutdown() }
@@ -86,15 +95,6 @@ final class AppTests: XCTestCase {
         defer { app.shutdown() }
         try configure(app)
         
-        struct TestItem: Content {
-            var id: Int?
-            var title: String
-            var body: String
-            var state: State
-            var deadline: Double?
-            var last_modified: Double?
-        }
-        
         let postItem = Item(title: "title", body: "body", state: .todo, deadline: nil)
         let postBody = try jsonEncoder.encodeAsByteBuffer(postItem, allocator: ByteBufferAllocator())
         
@@ -120,5 +120,23 @@ final class AppTests: XCTestCase {
             XCTAssertEqual(res.status, .notFound)
         })
     }
+    
+    func testDeleteSuccessCase() throws {
+        let app = Application(.testing)
+        defer { app.shutdown() }
+        try configure(app)
+        
+        let postItem = Item(title: "title", body: "body", state: .todo, deadline: nil)
+        let postBody = try jsonEncoder.encodeAsByteBuffer(postItem, allocator: ByteBufferAllocator())
+        
+        try app.test(.POST, "item", headers: header, body: postBody) { res in
+            XCTAssertEqual(res.status, .created)
+            let postedItem = try res.content.decode(TestItem.self)
+            if let id = postItem.id {
+                try app.test(.DELETE, "item/id?key=zziruru_taetae_cheer_up") { res in
+                    XCTAssertEqual(res.status, .ok)
+                }
+            }
+        }
+    }
 }
-
