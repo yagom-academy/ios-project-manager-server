@@ -80,6 +80,36 @@ final class AppTests: XCTestCase {
             XCTAssertEqual(res.status, .notFound)
         }
     }
+    
+    func testPatchSuccessCase() throws {
+        let app = Application(.testing)
+        defer { app.shutdown() }
+        try configure(app)
+        
+        struct TestItem: Content {
+            var id: Int?
+            var title: String
+            var body: String
+            var state: State
+            var deadline: Double?
+            var last_modified: Double?
+        }
+        
+        let postItem = Item(title: "title", body: "body", state: .todo, deadline: nil)
+        let postBody = try jsonEncoder.encodeAsByteBuffer(postItem, allocator: ByteBufferAllocator())
+        
+        try app.test(.POST, "item", headers: header, body: postBody) { res in
+            XCTAssertEqual(res.status, .created)
+            let postedItem = try res.content.decode(TestItem.self)
+            let patchItem = EditedItem(title: "New title", body: nil, state: nil, deadline: nil)
+            let patchBody = try jsonEncoder.encodeAsByteBuffer(patchItem, allocator: ByteBufferAllocator())
+            if let id = postItem.id {
+                try app.test(.PATCH, "item/id", headers: header, body: patchBody) { res in
+                    XCTAssertEqual(res.status, .ok)
+                }
+            }
+        }
+    }
 
     func testDeleteFailureCase() throws {
         let app = Application(.testing)
@@ -91,3 +121,4 @@ final class AppTests: XCTestCase {
         })
     }
 }
+
