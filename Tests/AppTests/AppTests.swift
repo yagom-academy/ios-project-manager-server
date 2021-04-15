@@ -103,8 +103,8 @@ final class AppTests: XCTestCase {
             let postedItem = try res.content.decode(TestItem.self)
             let patchItem = EditedItem(title: "New title", body: nil, state: nil, deadline: nil)
             let patchBody = try jsonEncoder.encodeAsByteBuffer(patchItem, allocator: ByteBufferAllocator())
-            if let id = postItem.id {
-                try app.test(.PATCH, "item/id", headers: header, body: patchBody) { res in
+            if let id = postedItem.id {
+                try app.test(.PATCH, "item/\(id)", headers: header, body: patchBody) { res in
                     XCTAssertEqual(res.status, .ok)
                 }
             }
@@ -131,9 +131,8 @@ final class AppTests: XCTestCase {
         
         try app.test(.POST, "item", headers: header, body: postBody) { res in
             XCTAssertEqual(res.status, .created)
-            let postedItem = try res.content.decode(TestItem.self)
             if let id = postItem.id {
-                try app.test(.DELETE, "item/id?key=zziruru_taetae_cheer_up") { res in
+                try app.test(.DELETE, "item/\(id)?key=zziruru_taetae_cheer_up") { res in
                     XCTAssertEqual(res.status, .ok)
                 }
             }
