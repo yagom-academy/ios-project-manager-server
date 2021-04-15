@@ -15,4 +15,15 @@ final class AppTests: XCTestCase {
             XCTAssertEqual(res.status, .ok)
         })
     }
+
+    func testGetFailureCase() throws {
+        let app = Application(.testing)
+        defer { app.shutdown() }
+        try configure(app)
+
+        let invalidURI = "item"
+        try app.test(.GET, invalidURI, afterResponse: { res in
+            XCTAssertEqual(res.status, .notFound)
+        })
+    }
 }
