@@ -102,10 +102,10 @@ struct ItemController: RouteCollection {
     }
     
     private func checkAccessToken(_ req: Request) throws {
-        guard let accessToken = try? req.query.decode(String.self) else {
+        guard let accessToken = try? req.query.decode(AccessToken.self) else {
             throw ItemError.noAccessToken
         }
-        if accessToken.key != AccessToken.key {
+        if accessToken.key != AccessKey.key {
             throw ItemError.invalidAccessKey
         }
     }
