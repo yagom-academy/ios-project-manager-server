@@ -7,6 +7,6 @@
 
 import Vapor
 
-struct AccessToken: Content {
-    let key: String
+enum AccessToken {
+    static let key = ""
 }
