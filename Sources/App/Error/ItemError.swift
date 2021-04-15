@@ -9,11 +9,17 @@ import Vapor
 
 enum ItemError: AbortError {
     case invalidID
+    case noAccessToken
+    case invalidAccessKey
     
     var reason: String {
         switch self {
         case .invalidID:
             return "id is not a(n) Integer"
+        case .invalidAccessKey:
+            return "Access Key is invalid"
+        case .noAccessToken:
+            return "Access Key is needed"
         }
     }
     
@@ -21,6 +27,10 @@ enum ItemError: AbortError {
         switch self {
         case .invalidID:
             return .badRequest
+        case .invalidAccessKey:
+            return .unauthorized
+        case .noAccessToken:
+            return .unauthorized
         }
     }
 }

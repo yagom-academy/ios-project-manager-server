@@ -74,6 +74,7 @@ struct ItemController: RouteCollection {
     }
     
     private func delete(req: Request) throws -> EventLoopFuture<Response> {
+        try checkAccessToken(req)
         let id = try checkID(req)
         
         return Item.find(id, on: req.db)
@@ -98,5 +99,14 @@ struct ItemController: RouteCollection {
             throw ItemError.invalidID
         }
         return id
+    }
+    
+    private func checkAccessToken(_ req: Request) throws {
+        guard let accessToken = try? req.query.decode(AccessToken.self) else {
+            throw ItemError.noAccessToken
+        }
+        if accessToken.key != "zziruru_taetae_cheer_up" {
+            throw ItemError.invalidAccessKey
+        }
     }
 }
