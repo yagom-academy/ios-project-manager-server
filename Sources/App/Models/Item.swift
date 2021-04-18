@@ -4,8 +4,8 @@ import Vapor
 final class Item: Model, Content {
     static let schema = "items"
     
-    @ID(key: .id)
-    var id: UUID?
+    @ID(custom: "id", generatedBy: .database)
+    var id: Int?
 
     @Field(key: "title")
     var title: String
@@ -22,13 +22,9 @@ final class Item: Model, Content {
     @Timestamp(key: "last_modified", on: .update)
     var last_modified: Date?
     
-    enum State: String, Codable {
-        case todo, doing, done
-    }
-    
     init() { }
 
-    init(id: UUID? = nil,
+    init(id: Int? = nil,
          title: String,
          body: String,
          state: State,
@@ -40,5 +36,14 @@ final class Item: Model, Content {
         self.state = state
         self.deadline = deadline
         self.last_modified = last_modified
+    }
+}
+
+extension Item: Validatable {
+    static func validations(_ validations: inout Validations) {
+        validations.add("title", as: String.self, is: .count(...500))
+        validations.add("body", as: String.self, is: .count(...1000))
+        validations.add("state", as: String.self, is: .in(State.allCases.map { $0.rawValue }))
+        validations.add("deadline", as: Double?.self, required: false)
     }
 }
