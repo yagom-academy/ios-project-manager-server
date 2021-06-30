@@ -18,7 +18,7 @@ final class Task: Model, Content {
     var title: String
     
     @Field(key: "deadline")
-    var deadline: TimeInterval
+    var deadline: Date
     
     @Enum(key: "state")
     var state: State
@@ -26,17 +26,17 @@ final class Task: Model, Content {
     @OptionalField(key: "contents")
     var contents: String?
     
-    @Timestamp(key: "last_modified_date", on: .update, format: .unix)i
-    var lastModifiedDate: TimeInterval?
+    @Timestamp(key: "last_modified_date", on: .update, format: .unix)
+    var lastModifiedDate: Date?
     
     init() {}
     
     init(id: Int? = nil,
          title: String,
-         deadline: TimeInterval,
+         deadline: Date,
          state: State,
          contents: String? = nil,
-         lastModifiedDate: TimeInterval? = nil) {
+         lastModifiedDate: Date? = nil) {
         self.id = id
         self.title = title
         self.deadline = deadline
