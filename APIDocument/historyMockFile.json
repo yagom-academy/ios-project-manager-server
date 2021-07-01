@@ -1,9 +1,11 @@
 {
     "historys" : [
         {
-            "title" : "Moved '책상정리' from TODO to DOING",
+            "action" : "Moved"
+            "previous_status" : "TODO"
+            "changed_status" : "DOING"
             "identifier" : "C36780C4-EF02-44C1-97C9-BB6543A170C5",
-            "project" : {
+            "task" : {
                 "title" : "책상정리",
                 "description" : "집중이 안될땐 역시나 책상정리",
                 "date" : 1624933807.141012,
@@ -12,9 +14,10 @@
             }
         },
         {
-            "title" : "Updated from '책상정리' to '책상엎기!!'",
+                "action" : "Updated"
+            "updated_title" : "책상엎기!!"
             "identifier" : "16373172-0457-4C96-825C-F3489FCBDD36",
-            "project" : {
+            "task" : {
                 "title" : "책상정리",
                  "description" : "집중이 안될땐 역시나 책상정리",
                  "date" : 1624933807.141012,
@@ -23,9 +26,11 @@
             }
         },
         {
-            "title" : "Moved '라자냐 재료사러 가기' from DOING to DONE",
+            "action" : "Moved"
+            "previous_status" : "DOING"
+            "changed_status" : "DONE"
             "identifier" : "839C8CCA-B653-478B-AFAF-F866999F65ED",
-            "project" : {
+            "task" : {
                 "title" : "라자냐 재료사러 가기",
                 "description" : "배고프다 오늘은 라자냐!",
                 "date" : 1624934310.967256,
@@ -34,9 +39,10 @@
             }
         },
         {
+            "action" : "Added"
             "title" : "Added '운동가기'",
             "identifier" : "37608C57-120C-46CA-B604-94D87B3A967B",
-            "project" : {
+            "task" : {
                 "title" : "운동가기",
                 "description" : "오늘은 꼭 운동을 가고야 말꺼야!!",
                 "date" : 1624952441.113274,
@@ -45,9 +51,9 @@
             }
         },
         {
-            "title" : "Removed '일기쓰기' from DONE",
+            "action" : "Removed"
             "identifier" : "0DA6110E-1C35-4A63-89FE-5BD28BBF464F",
-            "project" : {
+            "task" : {
                 "title" : "일기쓰기",
                 "description" : "나..ㄴ ㄱ ㅏ 끔 일ㄱ ㅣ를 쓴ㄷ ㅏ",
                 "date" : 1624934371.710085,
