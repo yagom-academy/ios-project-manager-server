@@ -4,6 +4,7 @@ import Vapor
 
 public func configure(_ app: Application) throws {
     configurePostgres(app)
+    app.migrations.add(TaskMigration())
     try routes(app)
 }
 
