@@ -19,10 +19,10 @@ struct TaskMigration: Migration {
             database.schema(Task.schema)
                 .id()
                 .field("title", .string, .required)
-                .field("deadline", .double, .required)
+                .field("deadline", .date, .required)
                 .field("state", state, .required)
                 .field("contents", .string)
-                .field("last_modified_date", .double, .required)
+                .field("last_modified_date", .datetime, .required)
                 .create()
         }
     }
