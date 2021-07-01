@@ -10,27 +10,27 @@ import Vapor
 
 final class Task: Model, Content {
     static let schema = "tasks"
-    
+
     @ID(custom: "id")
     var id: Int?
-    
+
     @Field(key: "title")
     var title: String
-    
+
     @Field(key: "deadline")
     var deadline: Date
-    
+
     @Enum(key: "state")
     var state: State
-    
+
     @OptionalField(key: "contents")
     var contents: String?
-    
+
     @Timestamp(key: "last_modified_date", on: .update, format: .unix)
     var lastModifiedDate: Date?
-    
-    init() {}
-    
+
+    init() { }
+
     init(id: Int? = nil,
          title: String,
          deadline: Date,

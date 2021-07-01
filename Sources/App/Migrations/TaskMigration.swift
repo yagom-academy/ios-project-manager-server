@@ -8,14 +8,13 @@
 import Fluent
 
 struct TaskMigration: Migration {
-    
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         _ = database.enum("state")
             .case("todo")
             .case("doing")
             .case("done")
             .create()
-        
+
         return database.enum("state").read().flatMap { state in
             database.schema(Task.schema)
                 .id()
@@ -27,9 +26,8 @@ struct TaskMigration: Migration {
                 .create()
         }
     }
-    
+
     func revert(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Task.schema).delete()
     }
-    
 }
