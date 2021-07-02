@@ -42,7 +42,6 @@ struct ProjectItemController: RouteCollection {
                 item.content = exist.content
                 item.progress = exist.progress
                 item.deadlineDate = exist.deadlineDate
-                item.isDeleted = exist.isDeleted
                 return item.update(on: req.db)
                     .map { return item }
             }

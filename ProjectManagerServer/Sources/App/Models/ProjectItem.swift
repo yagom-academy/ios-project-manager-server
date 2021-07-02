@@ -26,18 +26,13 @@ final class ProjectItem: Model, Content {
     @Field(key: "progress")
     var progress: String
     
-    // TODO: 삭제
-    @Field(key: "isDeleted")
-    var isDeleted: Bool
-    
     init() { }
     
-    init(id: UUID? = nil, title: String, content: String, deadlineDate: Date, progress: String, isDeleted: Bool) {
+    init(id: UUID? = nil, title: String, content: String, deadlineDate: Date, progress: String) {
         self.id = id
         self.title = title
         self.content = content
         self.deadlineDate = deadlineDate
         self.progress = progress
-        self.isDeleted = isDeleted
     }
 }
