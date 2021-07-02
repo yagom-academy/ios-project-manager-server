@@ -15,7 +15,6 @@ struct ProjectItemController: RouteCollection {
         projectItems.post(use: create)
         projectItems.delete(use: delete)
     }
-    // MARK: - 이동
     
     func read(req: Request) throws -> EventLoopFuture<[ProjectItem]> {
         guard let progress = req.parameters.get("progress") else {
