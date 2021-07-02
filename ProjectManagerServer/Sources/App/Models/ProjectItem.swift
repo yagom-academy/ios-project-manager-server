@@ -26,6 +26,7 @@ final class ProjectItem: Model, Content {
     @Field(key: "progress")
     var progress: String
     
+    // TODO: 삭제
     @Field(key: "isDeleted")
     var isDeleted: Bool
     

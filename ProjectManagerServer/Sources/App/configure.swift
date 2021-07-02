@@ -8,7 +8,7 @@ public func configure(_ app: Application) throws {
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
     app.migrations.add(CreateProjectItem())
     
-    app.databases.use(.postgres(hostname: "localhost", username: "leeyoungwoo", password: "", database: "project-management-appserver"), as: .psql)
+    app.databases.use(.postgres(hostname: "localhost", username: "ryan-son", password: "", database: "project-management-appserver"), as: .psql)
 
     // register routes
     try routes(app)
