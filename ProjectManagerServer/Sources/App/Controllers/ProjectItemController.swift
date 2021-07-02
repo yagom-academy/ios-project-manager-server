@@ -20,8 +20,7 @@ struct ProjectItemController: RouteCollection {
         guard let progress = req.parameters.get("progress") else {
             throw Abort(.badRequest)
         }
-        let item = ProjectItem.query(on: req.db).filter(\.$progress == progress).all()
-        return item
+        return ProjectItem.query(on: req.db).filter(\.$progress == progress).all()
     }
     
     func create(req: Request) throws -> EventLoopFuture<ProjectItem> {

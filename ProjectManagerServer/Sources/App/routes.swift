@@ -14,4 +14,8 @@ func routes(_ app: Application) throws {
     app.post("projectItem", use: projectItemController.create(req:))
     app.patch("projectItem", use: projectItemController.update(req:))
     app.delete("projectItem", use: projectItemController.delete(req:))
+    
+    app.get { req in
+        return "Hello Kane, Wody!"
+    }
 }
