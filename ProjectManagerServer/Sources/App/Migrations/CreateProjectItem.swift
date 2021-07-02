@@ -1,9 +1,10 @@
 //
-//  File.swift
+//  CreateProjectItem.swift
 //  
 //
-//  Created by 이영우 on 2021/07/02.
+//  Created by Wody, Kane, Ryan-Son on 2021/07/02.
 //
+
 import Fluent
 
 struct CreateProjectItem: Migration {
