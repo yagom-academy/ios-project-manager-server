@@ -7,8 +7,13 @@ func routes(_ app: Application) throws {
     }
 
     app.get("hello") { req -> String in
-        return "Hello, world!"
+        return "Hello, world!@"
     }
-
-    try app.register(collection: TodoController())
+    
+    app.get("test") { req -> String in
+        return "test, test!"
+    }
+    
+    try app.register(collection: TaskController())
+    try app.register(collection: HistoryController())
 }

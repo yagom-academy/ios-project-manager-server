@@ -15,8 +15,9 @@ public func configure(_ app: Application) throws {
         // ...
     }
     
-    app.migrations.add(CreateTodo())
-
+    app.migrations.add(TaskMigration())
+    app.migrations.add(HistoryMigration())
+    
     // register routes
     try routes(app)
 }
