@@ -7,18 +7,20 @@ struct TaskMigration: Migration {
             .case("doing")
             .case("done")
             .create()
+        
         return database.enum("status").read().flatMap { status in
-            database.schema(Task.schema)
+            database.schema("tasks")
                 .id()
-                .field("title", .string, .required)
-                .field("status", status, .required)
-                .field("description", .string, .required)
-                .field("date", .datetime, .required)
+                .field("title", .string)
+                .field("description", .string)
+                .field("date", .double)//@
+                .field("status", status)
                 .create()
         }
     }
 
     func revert(on database: Database) -> EventLoopFuture<Void> {
-        return database.schema(Task.schema).delete()
+        return database.schema("tasks").delete()
     }
 }
+

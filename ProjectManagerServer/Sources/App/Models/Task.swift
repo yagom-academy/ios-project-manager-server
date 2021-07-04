@@ -2,7 +2,7 @@ import Fluent
 import Vapor
 
 final class Task: Model, Content {
-    static let schema = "task"
+    static let schema = "tasks"
 
     @ID(key: .id)
     var id: UUID?
@@ -10,27 +10,27 @@ final class Task: Model, Content {
     @Field(key: "title")
     var title: String
 
+    @Field(key: "description")
+    var description: String
+    
+    @Field(key: "date")
+    var date: Double
+    
     @Enum(key: "status")
     var status: Status
     
-    @Field(key: "description")
-    var description: String
-
-    @Timestamp(key: "date", on: .create)
-    var date: Date?
-
     init() { }
 
     init(id: UUID? = nil,
          title: String,
-         status: Status,
          description: String,
-         date: Date? = nil) {
+         date: Double,
+         status: Status) {
         self.id = id
         self.title = title
-        self.status = status
         self.description = description
         self.date = date
+        self.status = status
     }
 }
 

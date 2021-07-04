@@ -7,13 +7,16 @@ func routes(_ app: Application) throws {
     }
 
     app.get("hello") { req -> String in
-        return "Hello, world!@"
+        return "Hello, world$"
     }
     
-    app.get("test") { req -> String in
-        return "test, test!"
-    }
+    app.get("tasks") { req -> EventLoopFuture<[Task]> in
+        return Task.query(on: req.db).all()
+    }//@
     
-    try app.register(collection: TaskController())
-    try app.register(collection: HistoryController())
+    app.post("tasks") { req -> EventLoopFuture<Task> in
+        
+        let task = try req.content.decode(Task.self)
+        return task.create(on: req.db).map { task }
+    }
 }
