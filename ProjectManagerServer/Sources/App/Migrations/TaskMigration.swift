@@ -13,7 +13,7 @@ struct TaskMigration: Migration {
                 .id()
                 .field("title", .string)
                 .field("description", .string)
-                .field("date", .double)//@
+                .field("date", .double)
                 .field("status", status)
                 .create()
         }
