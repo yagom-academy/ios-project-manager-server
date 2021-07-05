@@ -24,6 +24,10 @@ struct ProjectItemController: RouteCollection {
     }
     
     func create(req: Request) throws -> EventLoopFuture<ProjectItem> {
+        guard req.headers.contentType == .json else {
+            throw Abort(.badRequest)
+        }
+        
         try ProjectItem.Create.validate(content: req)
         let exist = try req.content.decode(ProjectItem.self)
         
@@ -33,6 +37,10 @@ struct ProjectItemController: RouteCollection {
     }
     
     func update(req: Request) throws -> EventLoopFuture<ProjectItem> {
+        guard req.headers.contentType == .json else {
+            throw Abort(.badRequest)
+        }
+        
         try ProjectItem.Update.validate(content: req)
         let exist = try req.content.decode(ProjectItem.Update.self)
         
@@ -64,7 +72,11 @@ struct ProjectItemController: RouteCollection {
     }
     
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
-        let exist = try req.content.decode(ProjectItem.self)
+        guard req.headers.contentType == .json else {
+            throw Abort(.badRequest)
+        }
+        
+        let exist = try req.content.decode(ProjectItem.Delete.self)
         return ProjectItem.find(exist.id, on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMap { $0.delete(on: req.db) }

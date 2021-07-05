@@ -29,6 +29,10 @@ final class ProjectItem: Model, Content {
         let index: Int?
     }
     
+    struct Delete: Content {
+        let id: UUID
+    }
+    
     @ID(key: .id)
     var id: UUID?
     
