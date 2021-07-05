@@ -24,21 +24,21 @@ struct TaskController: RouteCollection {
     }
 
     func create(req: Request) throws -> EventLoopFuture<Task> {
-        guard req.headers.contentType == .json else { throw Abort(.unsupportedMediaType) }
+        guard req.headers.contentType == .json else { throw TaskControllerError.contentTypeIsNotJSON }
         try Task.validate(content: req)
         let task = try req.content.decode(Task.self)
         return task.create(on: req.db).map { task }
     }
 
     func update(req: Request) throws -> EventLoopFuture<Task> {
-        guard let id = req.parameters.get("id", as: Int.self) else { throw Abort(.notFound) }
-        guard req.headers.contentType == .json else { throw Abort(.unsupportedMediaType) }
+        guard let id = req.parameters.get("id", as: Int.self) else { throw TaskControllerError.invalidID }
+        guard req.headers.contentType == .json else { throw TaskControllerError.contentTypeIsNotJSON }
         try PatchTask.validate(content: req)
         let patchTask = try req.content.decode(PatchTask.self)
-        guard !patchTask.isEmpty else { throw Abort(.imATeapot) }
+        guard !patchTask.isEmpty else { throw TaskControllerError.patchTaskIsEmpty }
 
         return Task.find(id, on: req.db)
-            .unwrap(or: Abort(.notFound))
+            .unwrap(or: TaskControllerError.idNotFound)
             .flatMap { task in
                 var isChanged: Bool = false
 
@@ -68,7 +68,7 @@ struct TaskController: RouteCollection {
 
                 guard isChanged else {
                     return Task.find(id, on: req.db)
-                        .unwrap(or: Abort(.notFound))
+                        .unwrap(or: TaskControllerError.idNotFound)
                 }
 
                 return task.update(on: req.db).transform(to: task)
@@ -76,8 +76,10 @@ struct TaskController: RouteCollection {
     }
 
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
-        return Task.find(req.parameters.get("id"), on: req.db)
-                    .unwrap(or: Abort(.notFound))
+        guard let id = req.parameters.get("id", as: Int.self) else { throw TaskControllerError.invalidID }
+
+        return Task.find(id, on: req.db)
+                    .unwrap(or: TaskControllerError.idNotFound)
                     .flatMap { $0.delete(on: req.db) }
                     .transform(to: .noContent)
     }
