@@ -33,6 +33,7 @@ struct TaskController: RouteCollection {
         guard let id = req.parameters.get("id", as: Int.self) else { throw Abort(.notFound) }
         guard req.headers.contentType == .json else { throw Abort(.unsupportedMediaType) }
         let patchTask = try req.content.decode(PatchTask.self)
+        guard !patchTask.isEmpty else { throw Abort(.imATeapot) }
 
         return Task.find(id, on: req.db)
             .unwrap(or: Abort(.notFound))
