@@ -24,12 +24,14 @@ struct TaskController: RouteCollection {
     }
 
     func create(req: Request) throws -> EventLoopFuture<Task> {
+        guard req.headers.contentType == .json else { throw Abort(.unsupportedMediaType) }
         let task = try req.content.decode(Task.self)
         return task.create(on: req.db).map { task }
     }
 
     func update(req: Request) throws -> EventLoopFuture<Task> {
         guard let id = req.parameters.get("id", as: Int.self) else { throw Abort(.notFound) }
+        guard req.headers.contentType == .json else { throw Abort(.unsupportedMediaType) }
         let patchTask = try req.content.decode(PatchTask.self)
 
         return Task.find(id, on: req.db)
