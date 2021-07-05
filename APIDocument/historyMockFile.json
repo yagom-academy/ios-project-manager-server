@@ -1,65 +1,36 @@
 {
     "historys" : [
         {
-            "action" : "Moved"
-            "previous_status" : "TODO"
-            "changed_status" : "DOING"
-            "identifier" : "C36780C4-EF02-44C1-97C9-BB6543A170C5",
-            "task" : {
-                "title" : "책상정리",
-                "description" : "집중이 안될땐 역시나 책상정리",
-                "date" : 1624933807.141012,
-                "status" : "TODO",
-                "identifier" : "1731F34B-C6B5-40DD-B07E-6CBDC444382C"
-            }
+            "action" : "Moved”,
+            "updatedTitle" : null,
+            "previousStatus" : "TODO”,
+            "changedStatus" : "DOING”,
+            "id" : "C36780C4-EF02-44C1-97C9-BB6543A170C5",
+            "taskId" : "1731F34B-C6B5-40DD-B07E-6CBDC444382C"
         },
         {
-                "action" : "Updated"
-            "updated_title" : "책상엎기!!"
-            "identifier" : "16373172-0457-4C96-825C-F3489FCBDD36",
-            "task" : {
-                "title" : "책상정리",
-                 "description" : "집중이 안될땐 역시나 책상정리",
-                 "date" : 1624933807.141012,
-                 "status" : "TODO",
-                 "identifier" : "1731F34B-C6B5-40DD-B07E-6CBDC444382C"
-            }
+            "action" : "Updated”,
+            "updatedTitle" : "책상엎기!!”,
+            "previousStatus" : null
+            “changedStatus” : null
+            "id" : "16373172-0457-4C96-825C-F3489FCBDD36",
+            "taskId” :  “1731F34B-C6B5-40DD-B07E-6CBDC444382C”
         },
         {
-            "action" : "Moved"
-            "previous_status" : "DOING"
-            "changed_status" : "DONE"
-            "identifier" : "839C8CCA-B653-478B-AFAF-F866999F65ED",
-            "task" : {
-                "title" : "라자냐 재료사러 가기",
-                "description" : "배고프다 오늘은 라자냐!",
-                "date" : 1624934310.967256,
-                "status" : "DOING",
-                "identifier" : "9F8A4D1A-512E-47AA-9311-73B874F76FC3"
-            }
+            "action" : "Added”,
+            "updatedTitle" : "Added '운동가기'",
+            "previousStatus" : null,
+            “changedStatus” : null,
+            "id" : "37608C57-120C-46CA-B604-94D87B3A967B",
+            "taskId” : "E9A8C2B7-ECFB-4B7E-B7D6-3218C0C54A25"
         },
         {
-            "action" : "Added"
-            "title" : "Added '운동가기'",
-            "identifier" : "37608C57-120C-46CA-B604-94D87B3A967B",
-            "task" : {
-                "title" : "운동가기",
-                "description" : "오늘은 꼭 운동을 가고야 말꺼야!!",
-                "date" : 1624952441.113274,
-                "status" : "TODO",
-                "identifier" : "E9A8C2B7-ECFB-4B7E-B7D6-3218C0C54A25"
-            }
-        },
-        {
-            "action" : "Removed"
-            "identifier" : "0DA6110E-1C35-4A63-89FE-5BD28BBF464F",
-            "task" : {
-                "title" : "일기쓰기",
-                "description" : "나..ㄴ ㄱ ㅏ 끔 일ㄱ ㅣ를 쓴ㄷ ㅏ",
-                "date" : 1624934371.710085,
-                "status" : "DONE",
-                "identifier" : "7F2D92A1-6D15-4DB3-BD29-1A43CF244822"
-            }
+            "action" : "Removed”,
+            “updatedTitle" : null,
+            "previousStatus" : null,
+            “changedStatus” : null,
+            "id" : "0DA6110E-1C35-4A63-89FE-5BD28BBF464F",
+            "taskId” :  "7F2D92A1-6D15-4DB3-BD29-1A43CF244822”
         }
     ]
 }
