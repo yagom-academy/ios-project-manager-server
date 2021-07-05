@@ -26,13 +26,17 @@ final class ProjectItem: Model, Content {
     @Field(key: "progress")
     var progress: String
     
+    @Field(key: "index")
+    var index: UInt
+    
     init() { }
     
-    init(id: UUID? = nil, title: String, content: String, deadlineDate: Date, progress: String) {
+    init(id: UUID? = nil, title: String, content: String, deadlineDate: Date, progress: String, index: Int) {
         self.id = id
         self.title = title
         self.content = content
         self.deadlineDate = deadlineDate
         self.progress = progress
+        self.index = index
     }
 }
