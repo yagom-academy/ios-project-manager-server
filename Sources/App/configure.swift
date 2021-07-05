@@ -13,6 +13,7 @@ private func configurePostgres(_ app: Application) {
     if let databaseURL = Environment.get("DATABASE_URL"),
        var postgresConfig = PostgresConfiguration(url: databaseURL) {
         postgresConfig.tlsConfiguration = .makeClientConfiguration()
+        postgresConfig.tlsConfiguration?.renegotiationSupport = .none
         app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
     } else {
         guard let localPostgresData = try? String(contentsOfFile: DirectoryConfiguration.detect().workingDirectory
