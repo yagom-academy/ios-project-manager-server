@@ -13,9 +13,9 @@ struct TaskController: RouteCollection {
         let tasks = routes.grouped("tasks")
         tasks.get(use: showAll)
         tasks.post(use: create)
-        tasks.group(":id") { tasks in
-            tasks.patch(use: update)
-            tasks.delete(use: delete)
+        tasks.group(":id") { task in
+            task.patch(use: update)
+            task.delete(use: delete)
         }
     }
 
