@@ -13,5 +13,23 @@ private func configurePostgres(_ app: Application) {
        var postgresConfig = PostgresConfiguration(url: databaseURL) {
         postgresConfig.tlsConfiguration = .makeClientConfiguration()
         app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
+    } else {
+        guard let localPostgresData = try? String(contentsOfFile: DirectoryConfiguration.detect().workingDirectory
+                                                    + LocalPostgres.filePath).data(using: .utf8),
+              let localPostgres = try? JSONDecoder().decode(LocalPostgres.self, from: localPostgresData) else { return }
+
+        app.databases.use(.postgres(hostname: LocalPostgres.hostname,
+                                    username: localPostgres.username,
+                                    password: localPostgres.password,
+                                    database: localPostgres.database), as: .psql)
     }
+}
+
+private struct LocalPostgres: Decodable {
+    static let filePath: String = "Config/secrets/local_postgres.json"
+    static let hostname: String = "localhost"
+
+    let username: String
+    let password: String
+    let database: String
 }
