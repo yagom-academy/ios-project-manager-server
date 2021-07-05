@@ -24,23 +24,40 @@ struct ProjectItemController: RouteCollection {
     }
     
     func create(req: Request) throws -> EventLoopFuture<ProjectItem> {
+        try ProjectItem.Create.validate(content: req)
         let exist = try req.content.decode(ProjectItem.self)
+        
         return exist.save(on: req.db).map { (result) -> ProjectItem in
             return exist
         }
     }
     
     func update(req: Request) throws -> EventLoopFuture<ProjectItem> {
-        let exist = try req.content.decode(ProjectItem.self)
+        try ProjectItem.Update.validate(content: req)
+        let exist = try req.content.decode(ProjectItem.Update.self)
         
         return ProjectItem.find(exist.id, on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMap { item in
-                item.title = exist.title
-                item.content = exist.content
-                item.progress = exist.progress
-                item.deadlineDate = exist.deadlineDate
-                item.index = exist.index
+                if let title = exist.title{
+                    item.title = title
+                }
+                
+                if let content = exist.content {
+                    item.content = content
+                }
+                
+                if let progress = exist.progress {
+                    item.progress = progress
+                }
+                
+                if let deadlineDate = exist.deadlineDate {
+                    item.deadlineDate = deadlineDate
+                }
+                
+                if let index = exist.index {
+                    item.index = index
+                }
                 return item.update(on: req.db)
                     .map { return item }
             }

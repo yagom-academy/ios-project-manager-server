@@ -10,7 +10,7 @@ import Fluent
 import FluentPostgresDriver
 
 public func configure(_ app: Application) throws {
-    app.migrations.add(CreateProjectItem())
+    app.migrations.add(CreateProjectItem() , to: .psql)
     
     if let databaseURL = Environment.get("DATABASE_URL"), var postgresConfig = PostgresConfiguration(url: databaseURL) {
         var clientTLSConfiguration = TLSConfiguration.makeClientConfiguration()
