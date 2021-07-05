@@ -1,11 +1,13 @@
+//
+//  routes.swift
+//
+//
+//  Created by Wody, Kane, Ryan-Son on 2021/07/02.
+//
+
 import Vapor
+import Fluent
 
 func routes(_ app: Application) throws {
-    app.get { req in
-        return "It works!"
-    }
-
-    app.get("hello") { req -> String in
-        return "Hello, world!"
-    }
+    try app.register(collection: ProjectItemController())
 }
