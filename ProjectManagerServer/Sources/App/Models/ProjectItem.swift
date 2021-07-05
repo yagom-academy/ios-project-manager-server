@@ -75,6 +75,7 @@ extension ProjectItem.Create: Validatable {
 
 extension ProjectItem.Update: Validatable {
     static func validations(_ validations: inout Validations) {
+        validations.add("id", as: String.self, required: true)
         validations.add("title", as: String.self, required: false)
         validations.add("content", as: String.self, is: .count(...1000), required: false)
         validations.add("progress", as: String.self, is: .in("todo", "doing", "done"), required: false)

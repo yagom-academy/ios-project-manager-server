@@ -11,24 +11,36 @@ import Vapor
 struct ProjectItemController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let projectItems = routes.grouped("projectItems")
-        projectItems.get(use: read)
-        projectItems.post(use: create)
-        projectItems.delete(use: delete)
+        projectItems.group(":progress") { projectItem in
+            projectItem.get(use: read)
+        }
+        let projectItem = routes.grouped("projectItem")
+        projectItem.post(use: create)
+        projectItem.patch(use: update)
+        projectItem.delete(use: delete)
     }
     
     func read(req: Request) throws -> EventLoopFuture<[ProjectItem]> {
-        guard let progress = req.parameters.get("progress") else {
-            throw Abort(.badRequest)
+        let validProgress = ["todo", "doing", "done"]
+        
+        guard let progress = req.parameters.get("progress"), validProgress.contains(progress) else {
+            throw HTTPError.invalidProgressInURL
         }
+        
         return ProjectItem.query(on: req.db).filter(\.$progress == progress).all()
     }
     
     func create(req: Request) throws -> EventLoopFuture<ProjectItem> {
         guard req.headers.contentType == .json else {
-            throw Abort(.badRequest)
+            throw HTTPError.invalidContentType
         }
         
-        try ProjectItem.Create.validate(content: req)
+        do {
+            try ProjectItem.Create.validate(content: req)
+        } catch {
+            throw HTTPError.validationFailedWhileCreating
+        }
+        
         let exist = try req.content.decode(ProjectItem.self)
         
         return exist.save(on: req.db).map { (result) -> ProjectItem in
@@ -38,16 +50,21 @@ struct ProjectItemController: RouteCollection {
     
     func update(req: Request) throws -> EventLoopFuture<ProjectItem> {
         guard req.headers.contentType == .json else {
-            throw Abort(.badRequest)
+            throw HTTPError.invalidContentType
         }
         
-        try ProjectItem.Update.validate(content: req)
+        do {
+            try ProjectItem.Update.validate(content: req)
+        } catch {
+            throw HTTPError.validationFailedWhileUpdating
+        }
+        
         let exist = try req.content.decode(ProjectItem.Update.self)
         
         return ProjectItem.find(exist.id, on: req.db)
-            .unwrap(or: Abort(.notFound))
+            .unwrap(or: HTTPError.invalidID)
             .flatMap { item in
-                if let title = exist.title{
+                if let title = exist.title {
                     item.title = title
                 }
                 
@@ -66,6 +83,7 @@ struct ProjectItemController: RouteCollection {
                 if let index = exist.index {
                     item.index = index
                 }
+                
                 return item.update(on: req.db)
                     .map { return item }
             }
@@ -73,12 +91,12 @@ struct ProjectItemController: RouteCollection {
     
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
         guard req.headers.contentType == .json else {
-            throw Abort(.badRequest)
+            throw HTTPError.invalidContentType
         }
         
         let exist = try req.content.decode(ProjectItem.Delete.self)
         return ProjectItem.find(exist.id, on: req.db)
-            .unwrap(or: Abort(.notFound))
+            .unwrap(or: HTTPError.invalidID)
             .flatMap { $0.delete(on: req.db) }
             .transform(to: .ok)
     }

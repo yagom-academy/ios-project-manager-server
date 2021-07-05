@@ -13,7 +13,7 @@ public func configure(_ app: Application) throws {
     app.migrations.add(CreateProjectItem() , to: .psql)
     
     app.databases.use(.postgres(hostname: "localhost",
-                                username: "leeyoungwoo",
+                                username: "ryan-son",
                                 password: "",
                                 database: "project-management-appserver"),
                       as: .psql)
