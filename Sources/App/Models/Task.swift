@@ -26,7 +26,7 @@ final class Task: Model, Content {
     @OptionalField(key: "contents")
     var contents: String?
 
-    @Timestamp(key: "last_modified_date", on: .update, format: .unix)
+    @Timestamp(key: "last_modified_date", on: .update)
     var lastModifiedDate: Date?
 
     init() { }

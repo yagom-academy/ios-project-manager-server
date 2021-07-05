@@ -5,6 +5,7 @@ import Vapor
 public func configure(_ app: Application) throws {
     configurePostgres(app)
     app.migrations.add(TaskMigration())
+    configureDateStrategy()
     try routes(app)
 }
 
@@ -23,6 +24,16 @@ private func configurePostgres(_ app: Application) {
                                     password: localPostgres.password,
                                     database: localPostgres.database), as: .psql)
     }
+}
+
+private func configureDateStrategy() {
+    let encoder = JSONEncoder()
+    let decoder = JSONDecoder()
+    encoder.dateEncodingStrategy = .secondsSince1970
+    decoder.dateDecodingStrategy = .secondsSince1970
+
+    ContentConfiguration.global.use(encoder: encoder, for: .json)
+    ContentConfiguration.global.use(decoder: decoder, for: .json)
 }
 
 private struct LocalPostgres: Decodable {
