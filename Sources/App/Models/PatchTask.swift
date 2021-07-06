@@ -24,7 +24,7 @@ struct PatchTask: Decodable {
 extension PatchTask: Validatable {
     static func validations(_ validations: inout Validations) {
         validations.add("title", as: String.self, is: .count(1...50), required: false)
-        validations.add("state", as: String.self, is: .in("todo", "doing", "done"), required: false)
+        validations.add("state", as: String.self, is: .in(State.description), required: false)
         validations.add("deadline", as: Double.self, is: .range(0...253402182000), required: false)
         validations.add("contents", as: String.self, is: .count(1...1000), required: false)
     }
