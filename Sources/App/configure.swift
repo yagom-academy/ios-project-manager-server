@@ -18,8 +18,10 @@ private func configurePostgres(_ app: Application) {
     } else {
         guard let localPostgresData = try? String(contentsOfFile: DirectoryConfiguration.detect().workingDirectory
                                                     + LocalPostgres.filePath).data(using: .utf8),
-              let localPostgres = try? JSONDecoder().decode(LocalPostgres.self, from: localPostgresData) else { return }
-
+              var localPostgres = try? JSONDecoder().decode(LocalPostgres.self, from: localPostgresData) else { return }
+        if app.environment == .testing {
+            localPostgres.database = "testdb"
+        }
         app.databases.use(.postgres(hostname: LocalPostgres.hostname,
                                     username: localPostgres.username,
                                     password: localPostgres.password,
@@ -43,5 +45,5 @@ private struct LocalPostgres: Decodable {
 
     let username: String
     let password: String
-    let database: String
+    var database: String
 }
