@@ -40,8 +40,8 @@ struct TaskController: RouteCollection {
         try PatchTask.validate(content: req)
         let patchTask = try req.content.decode(PatchTask.self)
         guard !patchTask.isEmpty else { throw TaskControllerError.patchTaskIsEmpty }
-
-        return Task.find(id, on: req.db)
+        
+        let eventLoopFutureTask: EventLoopFuture<Task> = Task.find(id, on: req.db)
             .unwrap(or: TaskControllerError.idNotFound)
             .flatMap { task in
                 var isChanged: Bool = false
@@ -77,6 +77,8 @@ struct TaskController: RouteCollection {
 
                 return task.update(on: req.db).transform(to: task)
             }
+
+        return eventLoopFutureTask
     }
 
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
