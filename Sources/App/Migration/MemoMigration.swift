@@ -11,7 +11,7 @@ import FluentPostgresDriver
 struct MemoMigration: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         _ = database.enum("memo_type")
-            .case("toDo")
+            .case("todo")
             .case("doing")
             .case("done")
             .create()
