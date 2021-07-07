@@ -11,7 +11,6 @@ import Vapor
 struct MemoController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let memo = routes.grouped("memo")
-        
         memo.post(use: create)
     }
     
