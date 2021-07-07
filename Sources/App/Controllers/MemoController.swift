@@ -27,38 +27,47 @@ struct MemoController: RouteCollection {
     }
     
     func getToDo(request: Request) throws -> EventLoopFuture<Page<Memo>> {
+        var sortDirection: DatabaseQuery.Sort.Direction = .ascending
+
         if let sortOrder = request.query[SortOrder.self, at: "sort-order"] {
-            switch sortOrder {
-            case .ascending:
-                return Memo.query(on: request.db)
-                    .filter(\.$memo_type == .todo)
-                    .sort(\.$due_date, .ascending)
-                    .paginate(for: request)
-            case .descending:
-                return Memo.query(on: request.db)
-                    .filter(\.$memo_type == .todo)
-                    .sort(\.$due_date, .descending)
-                    .paginate(for: request)
+            if sortOrder == .descending {
+                sortDirection = .descending
             }
         }
 
         return Memo.query(on: request.db)
             .filter(\.$memo_type == .todo)
-            .sort(\.$due_date, .ascending)
+            .sort(\.$due_date, sortDirection)
             .paginate(for: request)
     }
     
     func getDoing(request: Request) throws -> EventLoopFuture<Page<Memo>> {
+        var sortDirection: DatabaseQuery.Sort.Direction = .ascending
+
+        if let sortOrder = request.query[SortOrder.self, at: "sort-order"] {
+            if sortOrder == .descending {
+                sortDirection = .descending
+            }
+        }
+
         return Memo.query(on: request.db)
             .filter(\.$memo_type == .doing)
-            .sort(\.$due_date, .ascending)
+            .sort(\.$due_date, sortDirection)
             .paginate(for: request)
     }
     
     func getDone(request: Request) throws -> EventLoopFuture<Page<Memo>> {
+        var sortDirection: DatabaseQuery.Sort.Direction = .ascending
+
+        if let sortOrder = request.query[SortOrder.self, at: "sort-order"] {
+            if sortOrder == .descending {
+                sortDirection = .descending
+            }
+        }
+
         return Memo.query(on: request.db)
             .filter(\.$memo_type == .done)
-            .sort(\.$due_date, .ascending)
+            .sort(\.$due_date, sortDirection)
             .paginate(for: request)
     }
     
@@ -84,7 +93,7 @@ struct MemoController: RouteCollection {
         return Memo.find(request.parameters.get("memoId"), on: request.db)
             .unwrap(or: Abort(.notFound))
             .flatMap {
-                return $0.delete(on: request.db) // 여기에 transform 적었더니 오류
+                return $0.delete(on: request.db)
             }.transform(to: .ok)
     }
 }
