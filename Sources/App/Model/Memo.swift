@@ -43,7 +43,7 @@ final class Memo: Model, Content {
 
 extension Memo {
     enum MemoType: String, Codable {
-        case toDo
+        case todo
         case doing
         case done
     }

@@ -8,35 +8,58 @@
 import Fluent
 import Vapor
 
+enum SortOrder: String, Decodable {
+    case ascending = "ascending"
+    case descending = "descending"
+}
+
 struct MemoController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let memo = routes.grouped("memo")
-        memo.get("todo", ":pageId", use: getToDo)
-        memo.get("doing", ":pageId", use: getDoing)
-        memo.get("done", ":pageId", use: getDone)
+        memo.get("todo", use: getToDo)
+        
+        memo.get("doing", use: getDoing)
+        memo.get("done", use: getDone)
         
         memo.post(use: create)
         memo.patch(":memoId", use: update)
         memo.delete(":memoId", use: delete)
     }
     
-    
-    func getToDo(request: Request) throws -> EventLoopFuture<[Memo]> {
+    func getToDo(request: Request) throws -> EventLoopFuture<Page<Memo>> {
+        if let sortOrder = request.query[SortOrder.self, at: "sort-order"] {
+            switch sortOrder {
+            case .ascending:
+                return Memo.query(on: request.db)
+                    .filter(\.$memo_type == .todo)
+                    .sort(\.$due_date, .ascending)
+                    .paginate(for: request)
+            case .descending:
+                return Memo.query(on: request.db)
+                    .filter(\.$memo_type == .todo)
+                    .sort(\.$due_date, .descending)
+                    .paginate(for: request)
+            }
+        }
+
         return Memo.query(on: request.db)
-            .filter(\.$memo_type == .toDo)
-            .all()
+            .filter(\.$memo_type == .todo)
+            .sort(\.$due_date, .ascending)
+            .paginate(for: request)
     }
     
-    func getDoing(request: Request) throws -> EventLoopFuture<[Memo]> {
+    func getDoing(request: Request) throws -> EventLoopFuture<Page<Memo>> {
         return Memo.query(on: request.db)
             .filter(\.$memo_type == .doing)
-            .all()
+            .sort(\.$due_date, .ascending)
+            .paginate(for: request)
     }
     
-    func getDone(request: Request) throws -> EventLoopFuture<[Memo]> {
+    func getDone(request: Request) throws -> EventLoopFuture<Page<Memo>> {
         return Memo.query(on: request.db)
             .filter(\.$memo_type == .done)
-            .all()
+            .sort(\.$due_date, .ascending)
+            .paginate(for: request)
     }
     
     func create(request: Request) throws -> EventLoopFuture<Memo> {
