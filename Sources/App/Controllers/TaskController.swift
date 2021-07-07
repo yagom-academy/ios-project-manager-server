@@ -27,7 +27,11 @@ struct TaskController: RouteCollection {
         guard req.headers.contentType == .json else { throw TaskControllerError.contentTypeIsNotJSON }
         try Task.validate(content: req)
         let task = try req.content.decode(Task.self)
-        return task.create(on: req.db).map { task }.encodeResponse(status: .created, for: req)
+        let eventLoopFutureTask = task.create(on: req.db).map { () -> Task in
+            return task
+        }
+
+        return eventLoopFutureTask.encodeResponse(status: .created, for: req)
     }
 
     func update(req: Request) throws -> EventLoopFuture<Task> {
