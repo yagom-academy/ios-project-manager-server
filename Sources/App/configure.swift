@@ -33,7 +33,9 @@ private func configureDateStrategy() {
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()
     encoder.dateEncodingStrategy = .secondsSince1970
+    encoder.keyEncodingStrategy = .convertToSnakeCase
     decoder.dateDecodingStrategy = .secondsSince1970
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
 
     ContentConfiguration.global.use(encoder: encoder, for: .json)
     ContentConfiguration.global.use(decoder: decoder, for: .json)
