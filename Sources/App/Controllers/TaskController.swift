@@ -83,10 +83,10 @@ struct TaskController: RouteCollection {
 
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
         guard let id = req.parameters.get("id", as: Int.self) else { throw TaskControllerError.invalidID }
-
-        return Task.find(id, on: req.db)
-            .unwrap(or: TaskControllerError.idNotFound)
-            .flatMap { $0.delete(on: req.db) }
-            .transform(to: .noContent)
+        let eventLoopFutureHttpStatus = Task.find(id, on: req.db)
+                                        .unwrap(or: TaskControllerError.idNotFound)
+                                        .flatMap { $0.delete(on: req.db) }
+                                        .transform(to: .noContent)
+        return eventLoopFutureHttpStatus
     }
 }
