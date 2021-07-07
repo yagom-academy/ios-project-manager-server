@@ -11,6 +11,9 @@ import Vapor
 struct MemoController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let memo = routes.grouped("memo")
+        memo.get { req in
+            return "memo페이지"
+        }
         memo.post(use: create)
     }
     
