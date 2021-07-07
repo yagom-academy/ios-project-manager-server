@@ -11,14 +11,7 @@ public func configure(_ app: Application) throws {
     } else {
         // ...
     }
-    
-    app.databases.use(
-        .postgres(hostname: "localhost",
-                  username: "postgres",
-                  password: "",
-                  database: "memos"),
-        as: .psql)
-    
+
     app.migrations.add(MemoMigration())
     try routes(app)
 }
