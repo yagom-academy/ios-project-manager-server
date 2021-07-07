@@ -23,7 +23,7 @@ struct MemoMigration: Migration {
                     .id()
                     .field("title", .string, .required)
                     .field("content", .string, .required)
-                    .field("deadline", .datetime, .required)
+                    .field("due_date", .datetime, .required)
                     .field("memo_type", memoType, .required)
                     .create()
         }

@@ -13,7 +13,6 @@ struct MemoController: RouteCollection {
         let memo = routes.grouped("memo")
         
         memo.post(use: create)
-        
     }
     
     func create(request: Request) throws -> EventLoopFuture<Memo> {
