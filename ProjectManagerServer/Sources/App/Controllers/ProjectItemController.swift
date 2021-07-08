@@ -21,13 +21,12 @@ struct ProjectItemController: RouteCollection {
     }
     
     func read(req: Request) throws -> EventLoopFuture<[ProjectItem]> {
-        let validProgress = ["todo", "doing", "done"]
-        
-        guard let progress = req.parameters.get("progress"), validProgress.contains(progress) else {
+        guard let pathParameter = req.parameters.get("progress"),
+              let progress = ProjectItem.Progress(rawValue: pathParameter) else {
             throw HTTPError.invalidProgressInURL
         }
         
-        return ProjectItem.query(on: req.db).filter(\.$progress == progress).all()
+        return ProjectItem.query(on: req.db).filter(\.$progress ==  progress).all()
     }
     
     func create(req: Request) throws -> EventLoopFuture<ProjectItem> {
@@ -36,15 +35,16 @@ struct ProjectItemController: RouteCollection {
         }
         
         do {
-            try ProjectItem.Create.validate(content: req)
+            try PostProjectItem.validate(content: req)
         } catch {
             throw HTTPError.validationFailedWhileCreating
         }
         
-        let exist = try req.content.decode(ProjectItem.self)
+        let exist = try req.content.decode(PostProjectItem.self)
+        let newProjectItem = ProjectItem(exist)
         
-        return exist.save(on: req.db).map { (result) -> ProjectItem in
-            return exist
+        return newProjectItem.save(on: req.db).map { (result) -> ProjectItem in
+            return newProjectItem
         }
     }
     
@@ -54,12 +54,12 @@ struct ProjectItemController: RouteCollection {
         }
         
         do {
-            try ProjectItem.Update.validate(content: req)
+            try PatchProjectItem.validate(content: req)
         } catch {
             throw HTTPError.validationFailedWhileUpdating
         }
         
-        let exist = try req.content.decode(ProjectItem.Update.self)
+        let exist = try req.content.decode(PatchProjectItem.self)
         
         return ProjectItem.find(exist.id, on: req.db)
             .unwrap(or: HTTPError.invalidID)
@@ -94,7 +94,7 @@ struct ProjectItemController: RouteCollection {
             throw HTTPError.invalidContentType
         }
         
-        let exist = try req.content.decode(ProjectItem.Delete.self)
+        let exist = try req.content.decode(DeleteProjectItem.self)
         return ProjectItem.find(exist.id, on: req.db)
             .unwrap(or: HTTPError.invalidID)
             .flatMap { $0.delete(on: req.db) }
