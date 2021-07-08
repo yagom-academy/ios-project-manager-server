@@ -11,6 +11,10 @@ import Vapor
 final class ProjectItem: Model, Content {
     static let schema = "projectItems"
     
+    enum Progress: String, Codable {
+        case todo, doing, done
+    }
+    
     @ID(key: .id)
     var id: UUID?
     
@@ -23,15 +27,15 @@ final class ProjectItem: Model, Content {
     @Field(key: "deadlineDate")
     var deadlineDate: Date
     
-    @Field(key: "progress")
-    var progress: String
+    @Enum(key: "progress")
+    var progress: Progress
     
     @Field(key: "index")
     var index: Int
     
     init() { }
     
-    init(id: UUID? = nil, title: String, content: String, deadlineDate: Date, progress: String, index: Int) {
+    init(id: UUID? = nil, title: String, content: String, deadlineDate: Date, progress: Progress, index: Int) {
         self.id = id
         self.title = title
         self.content = content

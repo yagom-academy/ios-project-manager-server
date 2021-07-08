@@ -21,13 +21,12 @@ struct ProjectItemController: RouteCollection {
     }
     
     func read(req: Request) throws -> EventLoopFuture<[ProjectItem]> {
-        let validProgress = ["todo", "doing", "done"]
-        
-        guard let progress = req.parameters.get("progress"), validProgress.contains(progress) else {
+        guard let pathParameter = req.parameters.get("progress"),
+              let progress = ProjectItem.Progress(rawValue: pathParameter) else {
             throw HTTPError.invalidProgressInURL
         }
         
-        return ProjectItem.query(on: req.db).filter(\.$progress == progress).all()
+        return ProjectItem.query(on: req.db).filter(\.$progress ==  progress).all()
     }
     
     func create(req: Request) throws -> EventLoopFuture<ProjectItem> {

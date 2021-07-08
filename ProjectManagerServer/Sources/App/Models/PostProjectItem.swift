@@ -12,7 +12,7 @@ struct PostProjectItem: Content {
     let title: String
     let content: String
     let deadlineDate: Date
-    let progress: String
+    let progress: ProjectItem.Progress
     let index: Int
 }
 
