@@ -22,8 +22,8 @@ struct MemoController: RouteCollection {
         memo.get("done", use: getDone)
         
         memo.post(use: create)
-        memo.patch(":memoId", use: update)
-        memo.delete(":memoId", use: delete)
+        memo.patch(use: update)
+        memo.delete(use: delete)
     }
     
     func getToDo(request: Request) throws -> EventLoopFuture<Page<Memo>> {
@@ -80,21 +80,31 @@ struct MemoController: RouteCollection {
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
         try Memo.validate(content: request)
         let memo = try request.content.decode(Memo.self)
-        return Memo.find(request.parameters.get("memoId"), on: request.db)
-            .unwrap(or: Abort(.notFound))
-            .flatMap {
-                $0.title = memo.title
-                $0.content = memo.content
-                $0.due_date = memo.due_date
-                return $0.update(on: request.db).transform(to: .ok)
-            }
+
+        if let memoId = request.query[UUID.self, at: "memo-id"] {
+            return Memo.find(memoId, on: request.db)
+                .unwrap(or: Abort(.notFound))
+                .flatMap {
+                    $0.title = memo.title
+                    $0.content = memo.content
+                    $0.due_date = memo.due_date
+                    $0.memo_type = memo.memo_type
+                    return $0.update(on: request.db).transform(to: .ok)
+                }
+        } else {
+            throw Abort(.custom(code: 404, reasonPhrase: "memo-id not found"))
+        }
     }
     
     func delete(request: Request) throws -> EventLoopFuture<HTTPStatus> {
-        return Memo.find(request.parameters.get("memoId"), on: request.db)
-            .unwrap(or: Abort(.notFound))
-            .flatMap {
-                return $0.delete(on: request.db)
-            }.transform(to: .ok)
+        if let memoId = request.query[UUID.self, at: "memo-id"] {
+            return Memo.find(memoId, on: request.db)
+                .unwrap(or: Abort(.notFound))
+                .flatMap {
+                    return $0.delete(on: request.db)
+                }.transform(to: .ok)
+        } else {
+            throw Abort(.custom(code: 404, reasonPhrase: "memo-id not found"))
+        }
     }
 }
