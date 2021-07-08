@@ -72,12 +72,24 @@ struct MemoController: RouteCollection {
     }
     
     func create(request: Request) throws -> EventLoopFuture<Memo> {
+        let contentType = request.headers["Content-Type"]
+
+        if contentType != ["application/json"] {
+            throw Abort(.custom(code: 400, reasonPhrase: "Content-Type should be application/json"))
+        }
+
         try Memo.validate(content: request)
         let memo = try request.content.decode(Memo.self)
         return memo.create(on: request.db).map { memo }
     }
     
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
+        let contentType = request.headers["Content-Type"]
+
+        if contentType != ["application/json"] {
+            throw Abort(.custom(code: 400, reasonPhrase: "Content-Type should be application/json"))
+        }
+
         let patchMemo = try request.content.decode(PatchMemo.self)
 
         if let memoId = request.query[UUID.self, at: "memo-id"] {
