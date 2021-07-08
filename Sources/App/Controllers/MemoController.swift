@@ -67,7 +67,7 @@ extension MemoController {
         let contentType = request.headers["Content-Type"]
 
         if contentType != ["application/json"] {
-            throw Abort(.custom(code: 400, reasonPhrase: "Content-Type should be application/json"))
+            throw MemoError.contentTypeIsNotJSON
         }
 
         try Memo.validate(content: request)
@@ -83,14 +83,14 @@ extension MemoController {
         let contentType = request.headers["Content-Type"]
 
         if contentType != ["application/json"] {
-            throw Abort(.custom(code: 400, reasonPhrase: "Content-Type should be application/json"))
+            throw MemoError.contentTypeIsNotJSON
         }
 
         let patchMemo = try request.content.decode(PatchMemo.self)
 
         if let memoId = request.query[UUID.self, at: "memo-id"] {
             return Memo.find(memoId, on: request.db)
-                .unwrap(or: Abort(.notFound))
+                .unwrap(or: MemoError.notFound)
                 .flatMap { memo in
                     if let title = patchMemo.title { memo.title = title }
                     if let content = patchMemo.content { memo.content = content }
@@ -99,7 +99,7 @@ extension MemoController {
                     return memo.update(on: request.db).transform(to: .ok)
                 }
         } else {
-            throw Abort(.custom(code: 404, reasonPhrase: "memo-id not found"))
+            throw MemoError.wrongParameter
         }
     }
 }
@@ -115,7 +115,7 @@ extension MemoController {
                     return $0.delete(on: request.db)
                 }.transform(to: .ok)
         } else {
-            throw Abort(.custom(code: 404, reasonPhrase: "memo-id not found"))
+            throw MemoError.notFound
         }
     }
 }
