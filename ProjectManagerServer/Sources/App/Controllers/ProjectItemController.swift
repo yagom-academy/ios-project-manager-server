@@ -36,15 +36,16 @@ struct ProjectItemController: RouteCollection {
         }
         
         do {
-            try ProjectItem.Create.validate(content: req)
+            try PostProjectItem.validate(content: req)
         } catch {
             throw HTTPError.validationFailedWhileCreating
         }
         
-        let exist = try req.content.decode(ProjectItem.self)
+        let exist = try req.content.decode(PostProjectItem.self)
+        let newProjectItem = ProjectItem(exist)
         
-        return exist.save(on: req.db).map { (result) -> ProjectItem in
-            return exist
+        return newProjectItem.save(on: req.db).map { (result) -> ProjectItem in
+            return newProjectItem
         }
     }
     
@@ -54,12 +55,12 @@ struct ProjectItemController: RouteCollection {
         }
         
         do {
-            try ProjectItem.Update.validate(content: req)
+            try PatchProjectItem.validate(content: req)
         } catch {
             throw HTTPError.validationFailedWhileUpdating
         }
         
-        let exist = try req.content.decode(ProjectItem.Update.self)
+        let exist = try req.content.decode(PatchProjectItem.self)
         
         return ProjectItem.find(exist.id, on: req.db)
             .unwrap(or: HTTPError.invalidID)
@@ -94,7 +95,7 @@ struct ProjectItemController: RouteCollection {
             throw HTTPError.invalidContentType
         }
         
-        let exist = try req.content.decode(ProjectItem.Delete.self)
+        let exist = try req.content.decode(DeleteProjectItem.self)
         return ProjectItem.find(exist.id, on: req.db)
             .unwrap(or: HTTPError.invalidID)
             .flatMap { $0.delete(on: req.db) }

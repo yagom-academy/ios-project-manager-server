@@ -11,28 +11,6 @@ import Vapor
 final class ProjectItem: Model, Content {
     static let schema = "projectItems"
     
-    struct Create: Content {
-        let id: UUID?
-        let title: String
-        let content: String
-        let deadlineDate: Date
-        let progress: String
-        let index: Int
-    }
-    
-    struct Update: Content {
-        let id: UUID
-        let title: String?
-        let content: String?
-        let deadlineDate: Date?
-        let progress: String?
-        let index: Int?
-    }
-    
-    struct Delete: Content {
-        let id: UUID
-    }
-    
     @ID(key: .id)
     var id: UUID?
     
@@ -61,25 +39,13 @@ final class ProjectItem: Model, Content {
         self.progress = progress
         self.index = index
     }
-}
-
-extension ProjectItem.Create: Validatable {
-    static func validations(_ validations: inout Validations) {
-        validations.add("title", as: String.self, required: true)
-        validations.add("content", as: String.self, is: .count(...1000), required: true)
-        validations.add("progress", as: String.self, is: .in("todo", "doing", "done"), required: true)
-        validations.add("index", as: Int.self, required: true)
-        validations.add("deadlineDate", as: Date.self, required: true)
-    }
-}
-
-extension ProjectItem.Update: Validatable {
-    static func validations(_ validations: inout Validations) {
-        validations.add("id", as: String.self, required: true)
-        validations.add("title", as: String.self, required: false)
-        validations.add("content", as: String.self, is: .count(...1000), required: false)
-        validations.add("progress", as: String.self, is: .in("todo", "doing", "done"), required: false)
-        validations.add("index", as: Int.self, required: false)
-        validations.add("deadlineDate", as: Date.self, required: false)
+    
+    init(_ postProjectItem: PostProjectItem) {
+        self.id = postProjectItem.id
+        self.title = postProjectItem.title
+        self.content = postProjectItem.content
+        self.deadlineDate = postProjectItem.deadlineDate
+        self.progress = postProjectItem.progress
+        self.index = postProjectItem.index
     }
 }
