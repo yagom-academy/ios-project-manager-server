@@ -8,16 +8,10 @@
 import Fluent
 import Vapor
 
-enum SortOrder: String, Decodable {
-    case ascending = "ascending"
-    case descending = "descending"
-}
-
 struct MemoController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let memo = routes.grouped("memo")
         memo.get("todo", use: getToDo)
-        
         memo.get("doing", use: getDoing)
         memo.get("done", use: getDone)
         
@@ -25,53 +19,51 @@ struct MemoController: RouteCollection {
         memo.patch(use: update)
         memo.delete(use: delete)
     }
+}
+
+// MARK: - GET
+
+extension MemoController {
+    private enum SortOrder: String, Decodable {
+        case ascending = "ascending"
+        case descending = "descending"
+    }
     
-    func getToDo(request: Request) throws -> EventLoopFuture<Page<Memo>> {
-        var sortDirection: DatabaseQuery.Sort.Direction = .ascending
-
-        if let sortOrder = request.query[SortOrder.self, at: "sort-order"] {
-            if sortOrder == .descending {
-                sortDirection = .descending
-            }
-        }
-
+    private func getToDo(request: Request) throws -> EventLoopFuture<Page<Memo>> {
         return Memo.query(on: request.db)
             .filter(\.$memo_type == .todo)
-            .sort(\.$due_date, sortDirection)
+            .sort(\.$due_date, sortOrder(request: request))
             .paginate(for: request)
     }
     
-    func getDoing(request: Request) throws -> EventLoopFuture<Page<Memo>> {
-        var sortDirection: DatabaseQuery.Sort.Direction = .ascending
-
-        if let sortOrder = request.query[SortOrder.self, at: "sort-order"] {
-            if sortOrder == .descending {
-                sortDirection = .descending
-            }
-        }
-
+    private func getDoing(request: Request) throws -> EventLoopFuture<Page<Memo>> {
         return Memo.query(on: request.db)
             .filter(\.$memo_type == .doing)
-            .sort(\.$due_date, sortDirection)
+            .sort(\.$due_date, sortOrder(request: request))
             .paginate(for: request)
     }
     
-    func getDone(request: Request) throws -> EventLoopFuture<Page<Memo>> {
-        var sortDirection: DatabaseQuery.Sort.Direction = .ascending
-
-        if let sortOrder = request.query[SortOrder.self, at: "sort-order"] {
-            if sortOrder == .descending {
-                sortDirection = .descending
-            }
-        }
-
+    private func getDone(request: Request) throws -> EventLoopFuture<Page<Memo>> {
         return Memo.query(on: request.db)
             .filter(\.$memo_type == .done)
-            .sort(\.$due_date, sortDirection)
+            .sort(\.$due_date, sortOrder(request: request))
             .paginate(for: request)
     }
     
-    func create(request: Request) throws -> EventLoopFuture<Memo> {
+    private func sortOrder(request: Request) -> DatabaseQuery.Sort.Direction {
+        if let sortOrder = request.query[SortOrder.self, at: "sort-order"] {
+            if sortOrder == .descending {
+                return .descending
+            }
+        }
+        return .ascending
+    }
+}
+
+// MARK: - POST
+
+extension MemoController {
+    private func create(request: Request) throws -> EventLoopFuture<Memo> {
         let contentType = request.headers["Content-Type"]
 
         if contentType != ["application/json"] {
@@ -82,8 +74,12 @@ struct MemoController: RouteCollection {
         let memo = try request.content.decode(Memo.self)
         return memo.create(on: request.db).map { memo }
     }
-    
-    func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
+}
+
+// MARK: - PATCH
+
+extension MemoController {
+    private func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
         let contentType = request.headers["Content-Type"]
 
         if contentType != ["application/json"] {
@@ -106,8 +102,12 @@ struct MemoController: RouteCollection {
             throw Abort(.custom(code: 404, reasonPhrase: "memo-id not found"))
         }
     }
-    
-    func delete(request: Request) throws -> EventLoopFuture<HTTPStatus> {
+}
+
+// MARK: - DELETE
+
+extension MemoController {
+    private func delete(request: Request) throws -> EventLoopFuture<HTTPStatus> {
         if let memoId = request.query[UUID.self, at: "memo-id"] {
             return Memo.find(memoId, on: request.db)
                 .unwrap(or: Abort(.notFound))
