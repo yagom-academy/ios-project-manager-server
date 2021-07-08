@@ -48,3 +48,21 @@ extension Memo {
         case done
     }
 }
+
+extension Memo: Validatable {
+    static func validations(_ validations: inout Validations) {
+        validations.add("title", as: String.self, is: !.empty)
+        validations.add("content", as: String.self, is: !.empty)
+        validations.add("due_date", as: Date.self, is: .valid)
+        validations.add("memo_type", as: String.self, is: .in("todo", "doing", "done"))
+    }
+}
+
+/*
+ {
+   "title": "String, example: 제목",
+   "content": "String, example: 내용",
+   "due_date": "Date, example: 2021-09-07T19:32:00Z",
+   "memo_type": "memo_type, exmaple: todo"
+ }
+ */

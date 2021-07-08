@@ -72,11 +72,13 @@ struct MemoController: RouteCollection {
     }
     
     func create(request: Request) throws -> EventLoopFuture<Memo> {
+        try Memo.validate(content: request)
         let memo = try request.content.decode(Memo.self)
         return memo.create(on: request.db).map { memo }
     }
     
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
+        try Memo.validate(content: request)
         let memo = try request.content.decode(Memo.self)
         return Memo.find(request.parameters.get("memoId"), on: request.db)
             .unwrap(or: Abort(.notFound))
@@ -89,7 +91,6 @@ struct MemoController: RouteCollection {
     }
     
     func delete(request: Request) throws -> EventLoopFuture<HTTPStatus> {
-
         return Memo.find(request.parameters.get("memoId"), on: request.db)
             .unwrap(or: Abort(.notFound))
             .flatMap {
