@@ -78,18 +78,17 @@ struct MemoController: RouteCollection {
     }
     
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
-        try Memo.validate(content: request)
-        let memo = try request.content.decode(Memo.self)
+        let patchMemo = try request.content.decode(PatchMemo.self)
 
         if let memoId = request.query[UUID.self, at: "memo-id"] {
             return Memo.find(memoId, on: request.db)
                 .unwrap(or: Abort(.notFound))
-                .flatMap {
-                    $0.title = memo.title
-                    $0.content = memo.content
-                    $0.due_date = memo.due_date
-                    $0.memo_type = memo.memo_type
-                    return $0.update(on: request.db).transform(to: .ok)
+                .flatMap { memo in
+                    if let title = patchMemo.title { memo.title = title }
+                    if let content = patchMemo.content { memo.content = content }
+                    if let due_date = patchMemo.due_date { memo.due_date = due_date }
+                    if let memo_type = patchMemo.memo_type { memo.memo_type = memo_type }
+                    return memo.update(on: request.db).transform(to: .ok)
                 }
         } else {
             throw Abort(.custom(code: 404, reasonPhrase: "memo-id not found"))

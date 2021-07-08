@@ -41,14 +41,6 @@ final class Memo: Model, Content {
     }
 }
 
-extension Memo {
-    enum MemoType: String, Codable {
-        case todo
-        case doing
-        case done
-    }
-}
-
 extension Memo: Validatable {
     static func validations(_ validations: inout Validations) {
         validations.add("title", as: String.self, is: !.empty)
