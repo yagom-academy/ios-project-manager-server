@@ -25,8 +25,8 @@ struct MemoController: RouteCollection {
 
 extension MemoController {
     private enum SortOrder: String, Decodable {
-        case ascending = "ascending"
-        case descending = "descending"
+        case ascending
+        case descending
     }
     
     private func getToDo(request: Request) throws -> EventLoopFuture<Page<Memo>> {
