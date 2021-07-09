@@ -30,11 +30,11 @@ public func configure(_ app: Application) throws {
         }
         
         app.databases.use(.postgres(
-          hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-          port: databasePort,
-          username: Environment.get("DATABASE_USERNAME") ?? "yagom-student",
-          password: Environment.get("DATABASE_PASSWORD") ?? "yagom",
-          database: Environment.get("DATABASE_NAME") ?? databaseName
+            hostname: Environment.get("DATABASE_HOST") ?? DBUserInfo.hostname,
+            port: databasePort,
+            username: Environment.get("DATABASE_USERNAME") ?? DBUserInfo.username,
+            password: Environment.get("DATABASE_PASSWORD") ?? DBUserInfo.password,
+            database: Environment.get("DATABASE_NAME") ?? databaseName
         ), as: .psql)
     }
     

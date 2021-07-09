@@ -13,13 +13,11 @@ final class AppTests: XCTestCase {
     private var app: Application!
     
     override func setUpWithError() throws {
-        print("시작")
         app = try Application.testable()
     }
     
     override func tearDownWithError() throws {
         app.shutdown()
-        print("끝")
     }
     
     func testProjectItemCanBeRetrievedFromAPI() throws {
@@ -74,22 +72,22 @@ final class AppTests: XCTestCase {
                                                 deadlineDate: nil,
                                                 progress: .doing,
                                                 index: 1)
-        
+
         try app.test(.PATCH, TestAssets.projectItemURI, beforeRequest: { req in
             try req.content.encode(patchProjectItem)
         }, afterResponse: { response in
             XCTAssertEqual(response.status, .ok)
-            
+
             let receivedProjectItem = try response.content.decode(ProjectItem.self)
             XCTAssertEqual(receivedProjectItem.title, TestAssets.expectedPatchTitle)
             XCTAssertEqual(receivedProjectItem.content, TestAssets.expectedPatchContent)
             XCTAssertEqual(receivedProjectItem.deadlineDate, TestAssets.expectedDeadlineDate)
             XCTAssertEqual(receivedProjectItem.progress, TestAssets.expectedPatchProgress)
             XCTAssertEqual(receivedProjectItem.index, TestAssets.expectedPatchIndex)
-            
+
             try app.test(.GET, TestAssets.doingProjectItemsURI, afterResponse: { secondResponse in
                 XCTAssertEqual(secondResponse.status, .ok)
-                
+
                 let doingProjectItems = try secondResponse.content.decode([ProjectItem].self)
                 XCTAssertEqual(doingProjectItems.count, 1)
                 XCTAssertEqual(doingProjectItems[0].title, TestAssets.expectedPatchTitle)
@@ -105,7 +103,7 @@ final class AppTests: XCTestCase {
         let projectItem = TestAssets.projectItem
         let _ = try projectItem.save(on: app.db).wait()
         let deleteProjectItem = DeleteProjectItem(id: try projectItem.requireID())
-        
+
         try app.test(.DELETE, TestAssets.projectItemURI, beforeRequest: { req in
             try req.content.encode(deleteProjectItem)
         }, afterResponse: { response in
@@ -113,10 +111,75 @@ final class AppTests: XCTestCase {
             
             try app.test(.GET, TestAssets.todoProjectItemsURI, afterResponse: { secondResponse in
                 XCTAssertEqual(secondResponse.status, .ok)
-                
+
                 let todoProjectItems = try secondResponse.content.decode([ProjectItem].self)
                 XCTAssertEqual(todoProjectItems.count, 0)
             })
+        })
+    }
+    
+    func testFailedToPostWithAPIDueToInvalidContentType() throws {
+        try app.test(.POST, TestAssets.projectItemURI, beforeRequest: { req in
+            req.headers.contentType = .plainText
+        }, afterResponse: { response in
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
+    func testFailedToPatchWithAPIDueToInvalidContentType() throws {
+        try app.test(.PATCH, TestAssets.projectItemURI, beforeRequest: { req in
+            req.headers.contentType = .plainText
+        }, afterResponse: { response in
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
+    func testFailedToDeleteWithAPIDueToInvalidContentType() throws {
+        try app.test(.DELETE, TestAssets.projectItemURI, beforeRequest: { req in
+            req.headers.contentType = .plainText
+        }, afterResponse: { response in
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
+    func testFailedToUpdateWithAPIDueToInvalidID() throws {
+        let invalidUUID = UUID()
+        let patchProjectItem = PatchProjectItem(id: invalidUUID,
+                                                title: "난 실패할거에요..",
+                                                content: nil,
+                                                deadlineDate: nil,
+                                                progress: .done,
+                                                index: 1)
+
+        try app.test(.PATCH, TestAssets.projectItemURI, beforeRequest: { req in
+            try req.content.encode(patchProjectItem)
+        }, afterResponse: { response in
+            XCTAssertEqual(response.status, .notFound)
+        })
+    }
+    
+    func testFailedToDeleteWithAPIDueToInvalidID() throws {
+        let invalidUUID = UUID()
+        let deleteProjectItem = DeleteProjectItem(id: invalidUUID)
+
+        try app.test(.DELETE, TestAssets.projectItemURI, beforeRequest: { req in
+            try req.content.encode(deleteProjectItem)
+        }, afterResponse: { response in
+            XCTAssertEqual(response.status, .notFound)
+        })
+    }
+    
+    func testFailedToPassValidationDueToContentExceeds1000Characters() throws {
+        try app.test(.POST, TestAssets.projectItemURI, beforeRequest: { req in
+            try req.content.encode(TestAssets.projectItemWithLongText)
+        }, afterResponse: { response in
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
+    func testFailedToPassValidationDueToEnteredInvalidPathParameterInURI() throws {
+        try app.test(.GET, "/projectItems/someInvalidURI", afterResponse: { response in
+            XCTAssertEqual(response.status, .notFound)
         })
     }
 }

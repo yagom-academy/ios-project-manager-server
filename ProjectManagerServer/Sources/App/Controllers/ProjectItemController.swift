@@ -64,28 +64,13 @@ struct ProjectItemController: RouteCollection {
         return ProjectItem.find(exist.id, on: req.db)
             .unwrap(or: HTTPError.invalidID)
             .flatMap { item in
-                if let title = exist.title {
-                    item.title = title
-                }
+                if let title = exist.title { item.title = title }
+                if let content = exist.content { item.content = content }
+                if let progress = exist.progress { item.progress = progress }
+                if let deadlineDate = exist.deadlineDate { item.deadlineDate = deadlineDate }
+                if let index = exist.index { item.index = index }
                 
-                if let content = exist.content {
-                    item.content = content
-                }
-                
-                if let progress = exist.progress {
-                    item.progress = progress
-                }
-                
-                if let deadlineDate = exist.deadlineDate {
-                    item.deadlineDate = deadlineDate
-                }
-                
-                if let index = exist.index {
-                    item.index = index
-                }
-                
-                return item.update(on: req.db)
-                    .map { return item }
+                return item.update(on: req.db).map { return item }
             }
     }
     
