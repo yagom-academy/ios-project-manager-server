@@ -19,7 +19,7 @@ struct CreateProjectItem: Migration {
                 .id()
                 .field("title", .string, .required)
                 .field("content", .string, .required)
-                .field("deadlineDate", .date, .required)
+                .field("deadlineDate", .datetime, .required)
                 .field("progress", progress, .required)
                 .field("index", .int, .required)
                 .create()
