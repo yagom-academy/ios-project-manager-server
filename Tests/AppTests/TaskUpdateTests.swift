@@ -48,4 +48,21 @@ final class TaskUpdateTests: XCTestCase {
             XCTAssertEqual(responsedTask.contents, patchTask.contents)
         })
     }
+
+    func test_Task_부분_수정_성공하면_200상태코드와_함께_응답한다() throws {
+        // given
+        let id: Int = 1
+        let patchTask = PatchTask(title: nil, deadline: nil, state: .done, contents: nil)
+
+        // when
+        try app.test(.PATCH, Task.schema + "/\(id)", beforeRequest: { request in
+            try request.content.encode(patchTask)
+        }, afterResponse: { response in
+            // then
+            let responsedTask = try response.content.decode(Task.self)
+            XCTAssertEqual(response.status, .ok)
+            XCTAssertEqual(responsedTask.id, id)
+            XCTAssertEqual(responsedTask.state, patchTask.state)
+        })
+    }
 }
