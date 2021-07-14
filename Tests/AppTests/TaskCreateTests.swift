@@ -108,5 +108,22 @@ final class TaskCreateTests: XCTestCase {
             XCTAssertEqual(response.status, .badRequest)
         })
     }
+    
+    func test_잘못된_url로_요청했을때_404상태코드를_반환한다() throws {
+        // given
+        let expectedTitle = "잘못된 url 요청"
+        
+        let task = Task(title: expectedTitle,
+                        deadline: Date(),
+                        state: .todo)
+        
+        try app.test(.POST, "tasks/1", beforeRequest: { request in
+            // when
+            try request.content.encode(task)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .notFound)
+        })
+    }
 
 }
