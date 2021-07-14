@@ -1,32 +1,39 @@
+//
+//  TaskCreateTests.swift
+//  
+//
+//  Created by duckbok on 2021/07/14.
+//
+
 @testable import App
 import XCTVapor
 
-final class AppTests: XCTestCase {
+final class TaskCreateTests: XCTestCase {
     var app: Application!
-    
+
     override func setUpWithError() throws {
         app = Application(.testing)
         try configure(app)
         try app.autoRevert().wait()
         try app.autoMigrate().wait()
     }
-    
+
     override func tearDownWithError() throws {
         app.shutdown()
     }
-    
+
     func test_Task_등록이_성공했을때_201상태코드와_등록된_Task_정보가_반환된다() throws {
         // given
         let expectedTitle = "테스트 하기"
         let expectedDeadline = 1623412346.0
         let expectedState = "todo"
         let expectedContents = "공식 문서를 읽어보자"
-        
+
         let task = Task(title: expectedTitle,
                         deadline: Date(timeIntervalSince1970: expectedDeadline),
                         state: State(rawValue: expectedState)!,
                         contents: expectedContents)
-        
+
         try app.test(.POST, "tasks", beforeRequest: { request in
             // when
             try request.content.encode(task)
@@ -41,17 +48,17 @@ final class AppTests: XCTestCase {
             XCTAssertEqual(responseTask.contents, expectedContents)
         })
     }
-    
+
     func test_contents가_없는_Task를_등록했을때_201상태코드와_contents가_null인_Task_정보가_반환된다() throws {
         // given
         let expectedTitle = "테스트 하기"
         let expectedDeadline = 1623412123.0
         let expectedState = "doing"
-        
+
         let task = Task(title: expectedTitle,
                         deadline: Date(timeIntervalSince1970: expectedDeadline),
                         state: State(rawValue: expectedState)!)
-        
+
         try app.test(.POST, "tasks", beforeRequest: { request in
             // when
             try request.content.encode(task)
