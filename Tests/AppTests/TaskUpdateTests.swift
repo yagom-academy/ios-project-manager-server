@@ -70,4 +70,18 @@ final class TaskUpdateTests: XCTestCase {
             XCTAssertGreaterThan(responsedTask.lastModifiedDate!, oldTask.lastModifiedDate!)
         })
     }
+    
+    func test_프로퍼티의_타입이_잘못되었을때_400상태코드와_함께_응답한다() throws {
+        // given
+        let state = ["deadline": "asd1231aweqwea"]
+        
+        // when
+        try app.test(.PATCH, Task.schema + "/1", beforeRequest: { request in
+            try request.content.encode(state, as: .json)
+        } ,afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+
 }
