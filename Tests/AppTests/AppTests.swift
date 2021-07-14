@@ -41,4 +41,29 @@ final class AppTests: XCTestCase {
             XCTAssertEqual(responseTask.contents, expectedContents)
         })
     }
+    
+    func test_contents가_없는_Task를_등록했을때_201상태코드와_contents가_null인_Task_정보가_반환된다() throws {
+        // given
+        let expectedTitle = "테스트 하기"
+        let expectedDeadline = 1623412123.0
+        let expectedState = "doing"
+        
+        let task = Task(title: expectedTitle,
+                        deadline: Date(timeIntervalSince1970: expectedDeadline),
+                        state: State(rawValue: expectedState)!)
+        
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            try request.content.encode(task)
+        }, afterResponse: { response in
+            // then
+            let responseTask = try response.content.decode(Task.self)
+            XCTAssertEqual(response.status, .created)
+            XCTAssertEqual(responseTask.id, 1)
+            XCTAssertEqual(responseTask.title, expectedTitle)
+            XCTAssertEqual(responseTask.deadline, Date(timeIntervalSince1970: expectedDeadline))
+            XCTAssertEqual(responseTask.state, State(rawValue: expectedState)!)
+            XCTAssertNil(responseTask.contents)
+        })
+    }
 }
