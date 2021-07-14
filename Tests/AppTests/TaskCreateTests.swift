@@ -92,7 +92,6 @@ final class TaskCreateTests: XCTestCase {
         }, afterResponse: { response in
             // then
             XCTAssertEqual(response.status, .badRequest)
-            XCTAssertEqual(response.body.string, "")
         })
     }
     
@@ -107,6 +106,21 @@ final class TaskCreateTests: XCTestCase {
         try app.test(.POST, "tasks", beforeRequest: { request in
             // when
             try request.content.encode(task)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
+    func test_Task의_프로퍼티중_올바르지않은_타입으로_요청했을때_400상태코드를_반환한다() throws {
+        // given
+        let resquestData: [String: String] = ["title": "수지의 군기 잡기",
+                                           "deadline": "1627016911",
+                                           "state": "todo"]
+        
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            try request.content.encode(resquestData, as: .json)
         }, afterResponse: { response in
             // then
             XCTAssertEqual(response.status, .badRequest)
