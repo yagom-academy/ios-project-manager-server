@@ -90,5 +90,23 @@ final class TaskCreateTests: XCTestCase {
             XCTAssertEqual(response.status, .badRequest)
         })
     }
+    
+    func test_id를_넣어서_Task를_등록했을때_400상태코드를_반환한다() throws {
+        // given
+        let expectedTitle = "id추가"
+        
+        let task = Task(id: 1000,
+                        title: expectedTitle,
+                        deadline: Date(),
+                        state: .todo)
+        
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            try request.content.encode(task)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
 
 }
