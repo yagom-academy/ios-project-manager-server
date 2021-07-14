@@ -10,6 +10,7 @@ import XCTVapor
 
 final class TaskUpdateTests: XCTestCase {
     var app: Application!
+    var oldTask: Task!
 
     override func setUpWithError() throws {
         app = Application(.testing)
@@ -20,6 +21,7 @@ final class TaskUpdateTests: XCTestCase {
         // given
         let task = Task(title: "제목", deadline: Date(), state: .todo)
         try task.save(on: app.db).wait()
+        oldTask = try app.db.query(Task.self).all().wait().first!
 
         try super.setUpWithError()
     }
@@ -31,38 +33,41 @@ final class TaskUpdateTests: XCTestCase {
 
     func test_Task_전체_수정_성공하면_200상태코드와_함께_응답한다() throws {
         // given
-        let id: Int = 1
         let patchTask = PatchTask(title: "회고하기", deadline: Date(), state: .doing, contents: "회고는 너무 즐거워")
 
         // when
-        try app.test(.PATCH, Task.schema + "/\(id)", beforeRequest: { request in
+        try app.test(.PATCH, Task.schema + "/\(oldTask.id!)", beforeRequest: { request in
             try request.content.encode(patchTask)
         }, afterResponse: { response in
             // then
             let responsedTask = try response.content.decode(Task.self)
             XCTAssertEqual(response.status, .ok)
-            XCTAssertEqual(responsedTask.id, id)
+            XCTAssertEqual(responsedTask.id, oldTask.id)
             XCTAssertEqual(responsedTask.title, patchTask.title)
             XCTAssertEqual(responsedTask.deadline, patchTask.deadline)
             XCTAssertEqual(responsedTask.state, patchTask.state)
             XCTAssertEqual(responsedTask.contents, patchTask.contents)
+            XCTAssertGreaterThan(responsedTask.lastModifiedDate!, oldTask.lastModifiedDate!)
         })
     }
 
     func test_Task_부분_수정_성공하면_200상태코드와_함께_응답한다() throws {
         // given
-        let id: Int = 1
         let patchTask = PatchTask(title: nil, deadline: nil, state: .done, contents: nil)
 
         // when
-        try app.test(.PATCH, Task.schema + "/\(id)", beforeRequest: { request in
+        try app.test(.PATCH, Task.schema + "/\(oldTask.id!)", beforeRequest: { request in
             try request.content.encode(patchTask)
         }, afterResponse: { response in
             // then
             let responsedTask = try response.content.decode(Task.self)
             XCTAssertEqual(response.status, .ok)
-            XCTAssertEqual(responsedTask.id, id)
+            XCTAssertEqual(responsedTask.id, oldTask.id)
+            XCTAssertEqual(responsedTask.title, oldTask.title)
+            XCTAssertEqual(responsedTask.deadline, oldTask.deadline)
             XCTAssertEqual(responsedTask.state, patchTask.state)
+            XCTAssertEqual(responsedTask.contents, oldTask.contents)
+            XCTAssertGreaterThan(responsedTask.lastModifiedDate!, oldTask.lastModifiedDate!)
         })
     }
 }
