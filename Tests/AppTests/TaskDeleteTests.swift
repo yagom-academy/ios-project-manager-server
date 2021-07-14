@@ -32,11 +32,9 @@ final class TaskDeleteTests: XCTestCase {
         // when
         try app.test(.DELETE, "/tasks/1", afterResponse: { response in
             // then
+            let isDeleted: Bool = try app.db.query(Task.self).all().wait().isEmpty
+            XCTAssertTrue(isDeleted)
             XCTAssertEqual(response.status, .noContent)
-            try app.test(.GET, "/tasks", afterResponse: { response in
-                let tasks = try response.content.decode([Task].self)
-                XCTAssertTrue(tasks.isEmpty)
-            })
         })
     }
 }
