@@ -73,4 +73,22 @@ final class TaskCreateTests: XCTestCase {
             XCTAssertNil(responseTask.contents)
         })
     }
+    
+    func test_title글자수가_50자_초과일때_400상태코드를_반환한다() throws {
+        // given
+        let expectedTitle = "50자 넘는 테스트를 하려고 더미 데이터를 만듭니다. 가나다라마바사아자차카타파하 야곰캠프빨리끝내자~~~~~~~~~~~"
+        
+        let task = Task(title: expectedTitle,
+                        deadline: Date(),
+                        state: .todo)
+        
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            try request.content.encode(task)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+
 }
