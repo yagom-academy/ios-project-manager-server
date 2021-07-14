@@ -11,6 +11,7 @@ import XCTVapor
 final class TaskUpdateTests: XCTestCase {
     var app: Application!
     var oldTask: Task!
+    var deadline: Date!
 
     override func setUpWithError() throws {
         app = Application(.testing)
@@ -19,7 +20,8 @@ final class TaskUpdateTests: XCTestCase {
         try app.autoMigrate().wait()
 
         // given
-        let task = Task(title: "제목", deadline: Date(), state: .todo)
+        let deadline = Date(timeIntervalSince1970: 123456789)
+        let task = Task(title: "제목", deadline: deadline, state: .todo)
         try task.save(on: app.db).wait()
         oldTask = try app.db.query(Task.self).all().wait().first!
 
@@ -28,6 +30,8 @@ final class TaskUpdateTests: XCTestCase {
 
     override func tearDownWithError() throws {
         app.shutdown()
+        deadline = nil
+        oldTask = nil
         try super.tearDownWithError()
     }
 
@@ -70,7 +74,27 @@ final class TaskUpdateTests: XCTestCase {
             XCTAssertGreaterThan(responsedTask.lastModifiedDate!, oldTask.lastModifiedDate!)
         })
     }
-    
+
+    func test_같은_내용의_Task를_수정_요청하면_최종수정시간_변경없이_200상태코드와_함께_응답한다() throws {
+        // given
+        let patchTask = PatchTask(title: oldTask.title, deadline: oldTask.deadline, state: oldTask.state, contents: oldTask.contents)
+
+        // when
+        try app.test(.PATCH, Task.schema + "/\(oldTask.id!)", beforeRequest: { request in
+            try request.content.encode(patchTask)
+        }, afterResponse: { response in
+            // then
+            let responsedTask = try response.content.decode(Task.self)
+            XCTAssertEqual(response.status, .ok)
+            XCTAssertEqual(responsedTask.id, oldTask.id)
+            XCTAssertEqual(responsedTask.title, oldTask.title)
+            XCTAssertEqual(responsedTask.deadline, oldTask.deadline)
+            XCTAssertEqual(responsedTask.state, oldTask.state)
+            XCTAssertEqual(responsedTask.contents, oldTask.contents)
+            XCTAssertEqual(responsedTask.lastModifiedDate!, oldTask.lastModifiedDate!)
+        })
+    }
+
     func test_프로퍼티의_타입이_잘못되었을때_400상태코드와_함께_응답한다() throws {
         // given
         let state = ["deadline": "asd1231aweqwea"]
