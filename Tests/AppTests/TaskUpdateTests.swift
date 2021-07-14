@@ -109,5 +109,15 @@ final class TaskUpdateTests: XCTestCase {
             XCTAssertEqual(response.status, .notFound)
         })
     }
-   
+    
+    func test_요청하는_url의_id가_유효하지_않으면_404상태코드와_함께_응답한다() throws {
+        // given
+        let invalidId = "/12sdf"
+        
+        // when
+        try app.test(.PATCH, Task.schema + invalidId, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .notFound)
+        })
+    }
 }
