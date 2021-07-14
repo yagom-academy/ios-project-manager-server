@@ -7,7 +7,7 @@
 
 import Vapor
 
-struct PatchTask: Decodable {
+struct PatchTask: Decodable, Content {
     let title: String?
     let deadline: Date?
     let state: State?
