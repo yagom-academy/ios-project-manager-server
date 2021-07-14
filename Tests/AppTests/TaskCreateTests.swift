@@ -73,4 +73,113 @@ final class TaskCreateTests: XCTestCase {
             XCTAssertNil(responseTask.contents)
         })
     }
+    
+    func test_유효하지않은_JSON형식으로_요청했을때_400상태코드를_반환한다() throws {
+        // given
+        let invalidJson: String = """
+        {
+            {}
+            "title": "수지의 군기 잡기",
+            "deadline": 1627016911,
+            "state": "todo"
+        }
+        """
+        
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            request.headers.contentType = .json
+            request.body.setString(invalidJson, at: 0)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
+    func test_title글자수가_50자_초과일때_400상태코드를_반환한다() throws {
+        // given
+        let expectedTitle = "50자 넘는 테스트를 하려고 더미 데이터를 만듭니다. 가나다라마바사아자차카타파하 야곰캠프빨리끝내자~~~~~~~~~~~"
+        
+        let task = Task(title: expectedTitle,
+                        deadline: Date(),
+                        state: .todo)
+        
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            try request.content.encode(task)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
+    func test_Task의_프로퍼티중_올바르지않은_타입으로_요청했을때_400상태코드를_반환한다() throws {
+        // given
+        let resquestData: [String: String] = ["title": "수지의 군기 잡기",
+                                           "deadline": "1627016911",
+                                           "state": "todo"]
+        
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            try request.content.encode(resquestData, as: .json)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
+    func test_id를_넣어서_Task를_등록했을때_400상태코드를_반환한다() throws {
+        // given
+        let expectedTitle = "id추가"
+        
+        let task = Task(id: 1000,
+                        title: expectedTitle,
+                        deadline: Date(),
+                        state: .todo)
+        
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            try request.content.encode(task)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
+    func test_잘못된_url로_요청했을때_404상태코드를_반환한다() throws {
+        // given
+        let expectedTitle = "잘못된 url 요청"
+        
+        let task = Task(title: expectedTitle,
+                        deadline: Date(),
+                        state: .todo)
+        
+        try app.test(.POST, "tasks/1", beforeRequest: { request in
+            // when
+            try request.content.encode(task)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .notFound)
+        })
+    }
+    
+    func test_잘못된_Content_Type으로_요청했을때_415상태코드를_반환한다() throws {
+        // given
+        let expectedTitle = "테스트 하기"
+        let expectedDeadline = 1623412123.0
+        let expectedState = "doing"
+
+        let task = Task(title: expectedTitle,
+                        deadline: Date(timeIntervalSince1970: expectedDeadline),
+                        state: State(rawValue: expectedState)!)
+
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            try request.content.encode(task)
+            request.headers.contentType = .plainText
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .unsupportedMediaType)
+        })
+    }
+    
 }
