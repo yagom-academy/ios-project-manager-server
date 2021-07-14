@@ -125,5 +125,25 @@ final class TaskCreateTests: XCTestCase {
             XCTAssertEqual(response.status, .notFound)
         })
     }
+    
+    func test_잘못된_Content_Type으로_요청했을때_415상태코드를_반환한다() throws {
+        // given
+        let expectedTitle = "테스트 하기"
+        let expectedDeadline = 1623412123.0
+        let expectedState = "doing"
+
+        let task = Task(title: expectedTitle,
+                        deadline: Date(timeIntervalSince1970: expectedDeadline),
+                        state: State(rawValue: expectedState)!)
+
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            try request.content.encode(task)
+            request.headers.contentType = .plainText
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .unsupportedMediaType)
+        })
+    }
 
 }
