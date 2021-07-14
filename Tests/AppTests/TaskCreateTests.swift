@@ -74,6 +74,28 @@ final class TaskCreateTests: XCTestCase {
         })
     }
     
+    func test_유효하지않은_JSON형식으로_요청했을때_400상태코드를_반환한다() throws {
+        // given
+        let invalidJson: String = """
+        {
+            {}
+            "title": "수지의 군기 잡기",
+            "deadline": 1627016911,
+            "state": "todo"
+        }
+        """
+        
+        try app.test(.POST, "tasks", beforeRequest: { request in
+            // when
+            request.headers.contentType = .json
+            request.body.setString(invalidJson, at: 0)
+        }, afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+            XCTAssertEqual(response.body.string, "")
+        })
+    }
+    
     func test_title글자수가_50자_초과일때_400상태코드를_반환한다() throws {
         // given
         let expectedTitle = "50자 넘는 테스트를 하려고 더미 데이터를 만듭니다. 가나다라마바사아자차카타파하 야곰캠프빨리끝내자~~~~~~~~~~~"
@@ -145,5 +167,5 @@ final class TaskCreateTests: XCTestCase {
             XCTAssertEqual(response.status, .unsupportedMediaType)
         })
     }
-
+    
 }
