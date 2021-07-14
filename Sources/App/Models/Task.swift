@@ -60,7 +60,7 @@ extension Task: Validatable {
         validations.add("title", as: String.self, is: .count(1...50), required: true)
         validations.add("state", as: String.self, is: .in(State.description), required: true)
         validations.add("deadline", as: Double.self, is: .range(0...253402182000), required: true)
-        validations.add("contents", as: String.self, is: .count(1...1000), required: false)
+        validations.add("contents", as: String?.self, is: .nil || .count(1...1000), required: false)
         validations.add("last_modified_date", as: Double?.self, is: .nil, required: false)
     }
 }

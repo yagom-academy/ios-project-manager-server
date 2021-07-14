@@ -16,9 +16,12 @@ private func configurePostgres(_ app: Application) {
         postgresConfig.tlsConfiguration?.certificateVerification = .none
         app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
     } else {
-        guard let localPostgresData = try? String(contentsOfFile: LocalPostgres.filePath).data(using: .utf8),
-              let localPostgres = try? JSONDecoder().decode(LocalPostgres.self, from: localPostgresData) else { return }
-
+        guard let localPostgresData = try? String(contentsOfFile: DirectoryConfiguration.detect().workingDirectory
+                                                    + LocalPostgres.filePath).data(using: .utf8),
+              var localPostgres = try? JSONDecoder().decode(LocalPostgres.self, from: localPostgresData) else { return }
+        if app.environment == .testing {
+            localPostgres.database = "testdb"
+        }
         app.databases.use(.postgres(hostname: LocalPostgres.hostname,
                                     username: localPostgres.username,
                                     password: localPostgres.password,
@@ -30,7 +33,9 @@ private func configureDateStrategy() {
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()
     encoder.dateEncodingStrategy = .secondsSince1970
+    encoder.keyEncodingStrategy = .convertToSnakeCase
     decoder.dateDecodingStrategy = .secondsSince1970
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
 
     ContentConfiguration.global.use(encoder: encoder, for: .json)
     ContentConfiguration.global.use(decoder: decoder, for: .json)
@@ -42,5 +47,5 @@ private struct LocalPostgres: Decodable {
 
     let username: String
     let password: String
-    let database: String
+    var database: String
 }
