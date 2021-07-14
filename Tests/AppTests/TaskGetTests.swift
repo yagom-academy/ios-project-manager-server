@@ -16,9 +16,32 @@ final class TaskGetTests: XCTestCase {
         try configure(app)
         try app.autoRevert().wait()
         try app.autoMigrate().wait()
+
+        // given
+        let tasks: [Task] = [
+            Task(title: "TIL쓰기", deadline: Date(), state: .todo),
+            Task(title: "회고하기", deadline: Date(), state: .todo, contents: "오늘도 즐거운 회고시간")
+        ]
+
+        for task in tasks {
+            try task.save(on: app.db).wait()
+        }
+
+        try super.setUpWithError()
     }
 
     override func tearDownWithError() throws {
         app.shutdown()
+        try super.tearDownWithError()
+    }
+
+    func test_Task목록_조회에_성공했을때_200상태코드와_함께_응답한다() throws {
+        // when
+        try app.test(.GET, Task.schema) { response in
+            //then
+            let responsedTasks = try response.content.decode([Task].self)
+            XCTAssertEqual(response.status, .ok)
+            XCTAssertEqual(responsedTasks.count, 2)
+        }
     }
 }
