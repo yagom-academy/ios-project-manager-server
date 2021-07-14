@@ -97,4 +97,17 @@ final class TaskUpdateTests: XCTestCase {
         })
     }
     
+    func test_존재하지_않는_id로_수정요청을_했을때_404상태코드와_함께_응답한다() throws {
+        // given
+        let patchTask = PatchTask(title: "회고하기", deadline: Date(), state: .doing, contents: "회고는 너무 즐거워")
+        
+        // when
+        try app.test(.PATCH, Task.schema + "/1000", beforeRequest: { request in
+            try request.content.encode(patchTask)
+        } ,afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .notFound)
+        })
+    }
+   
 }
