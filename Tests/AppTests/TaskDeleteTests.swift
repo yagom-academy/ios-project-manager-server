@@ -37,4 +37,18 @@ final class TaskDeleteTests: XCTestCase {
             XCTAssertEqual(response.status, .noContent)
         })
     }
+
+    func test_삭제요청한_ID의_Task가_없다면_404상태코드와_함께_에러를_응답한다() throws {
+        // given
+        let task = Task(title: "제목", deadline: Date(), state: .todo)
+        try task.save(on: app.db).wait()
+
+        // when
+        try app.test(.DELETE, "/tasks/2", afterResponse: { response in
+            // then
+            let isDeleted: Bool = try app.db.query(Task.self).all().wait().isEmpty
+            XCTAssertTrue(!isDeleted)
+            XCTAssertEqual(response.status, .notFound)
+        })
+    }
 }
