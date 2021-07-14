@@ -27,7 +27,11 @@ struct TaskController: RouteCollection {
         guard req.headers.contentType == .json else { throw TaskControllerError.contentTypeIsNotJSON }
         try Task.validate(content: req)
         let task = try req.content.decode(Task.self)
-        return task.create(on: req.db).map { task }.encodeResponse(status: .created, for: req)
+        let eventLoopFutureTask = task.create(on: req.db).map { () -> Task in
+            return task
+        }
+
+        return eventLoopFutureTask.encodeResponse(status: .created, for: req)
     }
 
     func update(req: Request) throws -> EventLoopFuture<Task> {
@@ -36,8 +40,8 @@ struct TaskController: RouteCollection {
         try PatchTask.validate(content: req)
         let patchTask = try req.content.decode(PatchTask.self)
         guard !patchTask.isEmpty else { throw TaskControllerError.patchTaskIsEmpty }
-
-        return Task.find(id, on: req.db)
+        
+        let eventLoopFutureTask: EventLoopFuture<Task> = Task.find(id, on: req.db)
             .unwrap(or: TaskControllerError.idNotFound)
             .flatMap { task in
                 var isChanged: Bool = false
@@ -73,14 +77,16 @@ struct TaskController: RouteCollection {
 
                 return task.update(on: req.db).transform(to: task)
             }
+
+        return eventLoopFutureTask
     }
 
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
         guard let id = req.parameters.get("id", as: Int.self) else { throw TaskControllerError.invalidID }
-
-        return Task.find(id, on: req.db)
-            .unwrap(or: TaskControllerError.idNotFound)
-            .flatMap { $0.delete(on: req.db) }
-            .transform(to: .noContent)
+        let eventLoopFutureHttpStatus = Task.find(id, on: req.db)
+                                        .unwrap(or: TaskControllerError.idNotFound)
+                                        .flatMap { $0.delete(on: req.db) }
+                                        .transform(to: .noContent)
+        return eventLoopFutureHttpStatus
     }
 }

@@ -14,10 +14,11 @@ struct PatchTask: Decodable, Content {
     let contents: String?
 
     var isEmpty: Bool {
-        return title == nil
-            && deadline == nil
-            && state == nil
-            && contents == nil
+        let isEmpty = title == nil
+                   && deadline == nil
+                   && state == nil
+                   && contents == nil
+        return isEmpty
     }
 }
 

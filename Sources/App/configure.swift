@@ -42,7 +42,7 @@ private func configureDateStrategy() {
 }
 
 private struct LocalPostgres: Decodable {
-    static let filePath: String = "Config/secrets/local_postgres.json"
+    static let filePath: String = DirectoryConfiguration.detect().workingDirectory + "Config/secrets/local_postgres.json"
     static let hostname: String = "localhost"
 
     let username: String
