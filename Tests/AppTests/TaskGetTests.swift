@@ -44,4 +44,15 @@ final class TaskGetTests: XCTestCase {
             XCTAssertEqual(responsedTasks.count, 2)
         }
     }
+
+    func test_다른_path에_GET요청을_한다면_404상태코드와_함께_에러를_응답한다() throws {
+        // when
+        try app.test(.GET, "hey") { response in
+            //then
+            let responsedTasks = try? response.content.decode([Task].self)
+            XCTAssertEqual(response.status, .notFound)
+            XCTAssertEqual(response.content.contentType, .json)
+            XCTAssertNil(responsedTasks)
+        }
+    }
 }
