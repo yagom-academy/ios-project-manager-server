@@ -84,4 +84,17 @@ final class TaskUpdateTests: XCTestCase {
         })
     }
 
+    func test_허용되지_않는_state로_수정요청을_했을때_400상태코드와_함께_응답한다() throws {
+        // given
+        let state = ["state": "hello"]
+        
+        // when
+        try app.test(.PATCH, Task.schema + "/1", beforeRequest: { request in
+            try request.content.encode(state, as: .json)
+        } ,afterResponse: { response in
+            // then
+            XCTAssertEqual(response.status, .badRequest)
+        })
+    }
+    
 }
