@@ -91,7 +91,7 @@ final class TaskUpdateTests: XCTestCase {
             XCTAssertEqual(floor(responsedTask.deadline.timeIntervalSince1970), floor(oldTask.deadline.timeIntervalSince1970))
             XCTAssertEqual(responsedTask.state, oldTask.state)
             XCTAssertEqual(responsedTask.contents, oldTask.contents)
-            XCTAssertEqual(floor(responsedTask.lastModifiedDate!.timeIntervalSince1970), floor(oldTask.lastModifiedDate!.timeIntervalSince1970))
+            XCTAssertEqual(responsedTask.lastModifiedDate!.timeIntervalSince1970, oldTask.lastModifiedDate!.timeIntervalSince1970)
         })
     }
 
