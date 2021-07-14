@@ -48,7 +48,7 @@ final class TaskUpdateTests: XCTestCase {
             XCTAssertEqual(response.status, .ok)
             XCTAssertEqual(responsedTask.id, oldTask.id)
             XCTAssertEqual(responsedTask.title, patchTask.title)
-            XCTAssertEqual(responsedTask.deadline, patchTask.deadline)
+            XCTAssertEqual(floor(responsedTask.deadline.timeIntervalSince1970), floor(patchTask.deadline!.timeIntervalSince1970))
             XCTAssertEqual(responsedTask.state, patchTask.state)
             XCTAssertEqual(responsedTask.contents, patchTask.contents)
             XCTAssertGreaterThan(responsedTask.lastModifiedDate!, oldTask.lastModifiedDate!)
@@ -88,10 +88,10 @@ final class TaskUpdateTests: XCTestCase {
             XCTAssertEqual(response.status, .ok)
             XCTAssertEqual(responsedTask.id, oldTask.id)
             XCTAssertEqual(responsedTask.title, oldTask.title)
-            XCTAssertEqual(responsedTask.deadline, oldTask.deadline)
+            XCTAssertEqual(floor(responsedTask.deadline.timeIntervalSince1970), floor(oldTask.deadline.timeIntervalSince1970))
             XCTAssertEqual(responsedTask.state, oldTask.state)
             XCTAssertEqual(responsedTask.contents, oldTask.contents)
-            XCTAssertEqual(responsedTask.lastModifiedDate!, oldTask.lastModifiedDate!)
+            XCTAssertEqual(floor(responsedTask.lastModifiedDate!.timeIntervalSince1970), floor(oldTask.lastModifiedDate!.timeIntervalSince1970))
         })
     }
 
