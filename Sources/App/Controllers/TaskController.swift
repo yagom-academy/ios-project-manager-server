@@ -86,7 +86,7 @@ struct TaskController: RouteCollection {
         let eventLoopFutureHttpStatus = Task.find(id, on: req.db)
                                         .unwrap(or: TaskControllerError.idNotFound)
                                         .flatMap { $0.delete(on: req.db) }
-                                        .transform(to: .noContent)
+                                        .transform(to: HTTPStatus.noContent)
         return eventLoopFutureHttpStatus
     }
 }
