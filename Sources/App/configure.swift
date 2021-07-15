@@ -16,9 +16,10 @@ private func configurePostgres(_ app: Application) {
         postgresConfig.tlsConfiguration?.certificateVerification = .none
         app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
     } else {
-        guard let localPostgresData = try? String(contentsOfFile: DirectoryConfiguration.detect().workingDirectory
-                                                    + LocalPostgres.filePath).data(using: .utf8),
-              var localPostgres = try? JSONDecoder().decode(LocalPostgres.self, from: localPostgresData) else { return }
+        guard let localPostgresData = try? String(contentsOfFile: LocalPostgres.filePath).data(using: .utf8),
+              var localPostgres = try? JSONDecoder().decode(LocalPostgres.self, from: localPostgresData) else {
+            return
+        }
         if app.environment == .testing {
             localPostgres.database = "testdb"
         }
