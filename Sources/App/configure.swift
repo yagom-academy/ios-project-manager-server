@@ -35,6 +35,7 @@ private func configureDateStrategy() {
     let decoder = JSONDecoder()
     encoder.dateEncodingStrategy = .secondsSince1970
     encoder.keyEncodingStrategy = .convertToSnakeCase
+    encoder.outputFormatting = .sortedKeys
     decoder.dateDecodingStrategy = .secondsSince1970
     decoder.keyDecodingStrategy = .convertFromSnakeCase
 
