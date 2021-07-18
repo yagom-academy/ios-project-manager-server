@@ -48,6 +48,7 @@ Temporary Items
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+ProjectManagerServer/Sources/app/Models/DBUserInfo.swift
 
 ## Build generated
 build/

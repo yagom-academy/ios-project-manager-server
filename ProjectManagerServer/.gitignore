@@ -6,4 +6,5 @@ DerivedData/
 .DS_Store
 db.sqlite
 .swiftpm
+Sources/app/Models/DBUserInfo.swift
 
