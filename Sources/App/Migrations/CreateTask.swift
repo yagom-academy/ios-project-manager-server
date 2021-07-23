@@ -9,23 +9,23 @@ import Foundation
 import Fluent
 import FluentPostgresDriver
 
-struct CreatTask: Migration {
+struct CreateTask: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
-             _ = database.enum("task_type")
+             _ = database.enum("status")
                  .case("todo")
                  .case("doing")
                  .case("done")
                  .create()
 
-             return database.enum("task_type")
+             return database.enum("status")
                  .read()
-                 .flatMap { memoType in
+                 .flatMap { status in
                      database.schema(Task.schema)
                          .id()
                          .field("title", .string, .required)
                          .field("description", .string, .required)
                          .field("due_date", .datetime, .required)
-                         .field("status", memoType, .required)
+                         .field("status", status, .required)
                          .create()
              }
          }
