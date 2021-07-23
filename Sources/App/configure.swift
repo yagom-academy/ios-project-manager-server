@@ -14,6 +14,8 @@ public func configure(_ app: Application) throws {
         postgresConfig.tlsConfiguration = .forClient(certificateVerification: .none)
         app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
     } else { return }
+    
+    app.migrations.add(CreateTask())
 
     // register routes
     try routes(app)
