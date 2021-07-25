@@ -1,7 +1,8 @@
-## iOS 커리어 스타터 캠프
+# 프로젝트 관리 앱(서버)
 
-### 프로젝트 관리 앱 서버 프로젝트 저장소
+<br>
 
-- 이 저장소를 자신의 저장소로 fork하여 프로젝트를 진행합니다
+## STEP 1 : API 설계 및 문서화
+- [API 문서](https://docs.google.com/spreadsheets/d/1_nDj5blrLfcHYRtEE_4KGOhiH57aKL6oBPPHIcJK4yE/edit#gid=0)
 
 
