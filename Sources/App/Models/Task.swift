@@ -52,8 +52,8 @@ extension Task {
 extension Task: Validatable {
     static func validations(_ validations: inout Validations) {
         validations.add("title", as: String.self, is: !.empty)
-        validations.add("content", as: String.self, is: !.empty)
+        validations.add("description", as: String.self, is: !.empty)
         validations.add("dueDate", as: Double.self, is: .valid)
-        validations.add("Status", as: String.self, is: .in("TODO", "DOING", "DONE"))
+        validations.add("status", as: String.self, is: .in("TODO", "DOING", "DONE"))
     }
 }
