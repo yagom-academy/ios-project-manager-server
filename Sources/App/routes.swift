@@ -6,6 +6,10 @@ func routes(_ app: Application) throws {
     }
     
     let tasks = app.grouped("tasks")
+    tasks.get { req in
+        Task.query(on: req.db).all()
+    }
+    
     tasks.post(use: create)
 }
 
