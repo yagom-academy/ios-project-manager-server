@@ -24,7 +24,7 @@ struct CreateTask: Migration {
                          .id()
                          .field("title", .string, .required)
                          .field("description", .string, .required)
-                         .field("due_date", .datetime, .required)
+                         .field("dueDate", .datetime, .required)
                          .field("status", status, .required)
                          .create()
              }
