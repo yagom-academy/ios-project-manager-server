@@ -41,12 +41,10 @@ final class Task: Model, Content {
     }
 }
 
-extension Task {
-    enum Status: String, Codable {
-        case TODO
-        case DOING
-        case DONE
-    }
+enum Status: String, Codable {
+    case TODO
+    case DOING
+    case DONE
 }
 
 extension Task: Validatable {
