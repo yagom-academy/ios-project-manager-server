@@ -20,8 +20,8 @@ final class Task: Model, Content {
     @Field(key: "description")
     var description: String
     
-    @Field(key: "due_date")
-    var due_date: Date
+    @Field(key: "dueDate")
+    var dueDate: Double
     
     @Enum(key: "status")
     var status: Status
@@ -31,20 +31,20 @@ final class Task: Model, Content {
     init(id: UUID? = nil,
          title: String,
          description: String,
-         due_date: Date,
+         dueDate: Double,
          status: Status) {
         self.id = id
         self.title = title
         self.description = description
-        self.due_date = due_date
+        self.dueDate = dueDate
         self.status = status
     }
 }
 
 extension Task {
     enum Status: String, Codable {
-        case todo
-        case doing
-        case done
+        case TODO
+        case DOING
+        case DONE
     }
 }
