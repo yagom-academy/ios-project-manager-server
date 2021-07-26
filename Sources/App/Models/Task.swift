@@ -19,15 +19,15 @@ final class Task: Model, Content {
     
     @Field(key: "description")
     var description: String
-    
+
     @Field(key: "dueDate")
     var dueDate: Double
-    
+
     @Enum(key: "status")
     var status: Status
-    
+
     init() { }
-    
+
     init(id: UUID? = nil,
          title: String,
          description: String,
@@ -53,7 +53,7 @@ extension Task: Validatable {
     static func validations(_ validations: inout Validations) {
         validations.add("title", as: String.self, is: !.empty)
         validations.add("content", as: String.self, is: !.empty)
-        validations.add("dueDate", as: Date.self, is: .valid)
+        validations.add("dueDate", as: Double.self, is: .valid)
         validations.add("Status", as: String.self, is: .in("TODO", "DOING", "DONE"))
     }
 }
