@@ -8,7 +8,9 @@
 import Vapor
 import Fluent
 
-final class Task: Model, Content {    
+final class Task: Model, Content {
+    static let schema = "tasks"
+    
     @ID(key: .id)
     var id: UUID?
     

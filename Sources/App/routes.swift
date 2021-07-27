@@ -11,6 +11,16 @@ func routes(_ app: Application) throws {
     }
     
     tasks.post(use: create)
+    
+    tasks.put(use: update)
+    
+    tasks.delete(":taskId") { req -> EventLoopFuture<HTTPStatus> in
+        Task.find(req.parameters.get("taskId"), on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMap {
+                return $0.delete(on: req.db).transform(to: .ok)
+            }
+    }
 }
 
 func create(req: Request) throws -> EventLoopFuture<Task> {
@@ -23,8 +33,16 @@ func read() {
     
 }
 
-func update() {
-}
-
-func delete() {
+func update(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+    let task = try req.content.decode(Task.self)
+    
+    return Task.find(task.id, on: req.db)
+        .unwrap(or: Abort(.notFound))
+        .flatMap {
+            $0.title = task.title
+            $0.description = task.description
+            $0.dueDate = task.dueDate
+            $0.status = task.status
+            return $0.update(on: req.db).transform(to: .ok)
+        }
 }
