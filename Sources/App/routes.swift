@@ -17,3 +17,12 @@ func create(req: Request) throws -> EventLoopFuture<Task> {
     let task = try req.content.decode(Task.self)
     return task.create(on: req.db).map { task }
 }
+
+func read() {
+}
+
+func update() {
+}
+
+func delete() {
+}
