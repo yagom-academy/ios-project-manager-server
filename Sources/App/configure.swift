@@ -12,11 +12,6 @@ public func configure(_ app: Application) throws {
         postgresConfig.tlsConfiguration = .forClient(certificateVerification: .none)
         app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
     } else { return }
-<<<<<<< HEAD
-    
-//    app.databases.use(.postgres(hostname: "localhost", username: "postgres", password: "", database: "testdb"), as: .psql)
-=======
->>>>>>> ada45ede991d3ded2d5b8874bd8b0d1cb999f295
     
 //    app.databases.use(.postgres(hostname: "localhost", username: "postgres", password: "", database: "testdb"), as: .psql)
 
