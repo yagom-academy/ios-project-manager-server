@@ -14,4 +14,6 @@ public func configure(_ app: Application) throws {
         // ...
     }
     try routes(app)
+    
+    app.migrations.add(TaskMigration())
 }
