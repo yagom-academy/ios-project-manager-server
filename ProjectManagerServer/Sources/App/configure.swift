@@ -12,7 +12,7 @@ public func configure(_ app: Application) throws {
         ), as: .psql)
     }
     
-    app.databases.use(.postgres(hostname: "localhost", username: "postgres", password: "", database: "taskdatabase"), as: .psql)
+    app.databases.use(.postgres(hostname: "localhost", username: "postgres", password: "", database: "taskdb"), as: .psql)
     
     app.migrations.add(TaskMigration())
     
