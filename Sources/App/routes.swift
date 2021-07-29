@@ -28,9 +28,8 @@ func create(req: Request) throws -> EventLoopFuture<Task> {
     return task.create(on: req.db).map { task }
 }
 
-func read() {
-    
-    
+func delete() {
+
 }
 
 func update(req: Request) throws -> EventLoopFuture<HTTPStatus> {
