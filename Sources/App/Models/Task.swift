@@ -50,7 +50,7 @@ enum Status: String, Codable {
 extension Task: Validatable {
     static func validations(_ validations: inout Validations) {
         validations.add("title", as: String.self, is: !.empty)
-        validations.add("description", as: String.self, is: !.empty)
+        validations.add("description", as: String.self, is: .count(...1000), required: true)
         validations.add("dueDate", as: Double.self, is: .valid)
         validations.add("status", as: String.self, is: .in("TODO", "DOING", "DONE"))
     }

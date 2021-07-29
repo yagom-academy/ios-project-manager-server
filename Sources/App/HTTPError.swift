@@ -9,7 +9,6 @@ import Vapor
 
 enum HTTPError {
     case notExistID
-    case overNumberOfCharacters
     case isNotDecoded
     case isValidContentType
 }
@@ -20,8 +19,6 @@ extension HTTPError: AbortError {
         switch self {
         case .notExistID:
             return "ID does not exist."
-        case .overNumberOfCharacters:
-            return "Description is more than 1000 characters."
         case .isNotDecoded:
             return "Data is not decoded to Task type."
         case .isValidContentType:
@@ -33,8 +30,6 @@ extension HTTPError: AbortError {
         switch self {
         case .notExistID:
             return .notFound
-        case .overNumberOfCharacters:
-            return .badRequest
         case .isNotDecoded:
             return .badRequest
         case .isValidContentType:

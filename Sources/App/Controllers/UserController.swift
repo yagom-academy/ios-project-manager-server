@@ -35,14 +35,9 @@ extension UserController {
             throw HTTPError.isValidContentType
         }
 
-        guard let task = try? req.content.decode(Task.self) else {
-            throw HTTPError.isNotDecoded
-        }
-        
-        guard task.description.count < 1000 else {
-            throw HTTPError.overNumberOfCharacters
-        }
-        
+        try Task.validate(content: req)
+        let task = try req.content.decode(Task.self)
+
         return task.create(on: req.db).map { task }
     }
 }
@@ -53,14 +48,9 @@ extension UserController {
             throw HTTPError.isValidContentType
         }
 
-        guard let task = try? req.content.decode(Task.self) else {
-            throw HTTPError.isNotDecoded
-        }
+        try Task.validate(content: req)
+        let task = try req.content.decode(Task.self)
 
-        guard task.description.count < 1000 else {
-            throw HTTPError.overNumberOfCharacters
-        }
-        
         return Task.find(task.id, on: req.db)
             .unwrap(or: HTTPError.notExistID)
             .flatMap {
