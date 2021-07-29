@@ -1,7 +1,14 @@
-## iOS 커리어 스타터 캠프
+## iOS-Project-Manager-Server
 
-### 프로젝트 관리 앱 서버 프로젝트 저장소
+- [API 문서](https://documenter.getpostman.com/view/14351200/TzsYPppH)
 
-- 이 저장소를 자신의 저장소로 fork하여 프로젝트를 진행합니다
+## 팀원
 
+- [KangKyung](https://github.com/KangKyung)
+- [James](https://github.com/inwoodev)
 
+## 프로젝트 수행
+
+- 기간: 2021.07.16 ~ 2021.08.06
+- [Ground Rule](https://github.com/KangKyung/ios-project-manager-server/blob/main/Ground%20Rule.md)
+- [TWL-2021.07.23](https://github.com/KangKyung/ios-project-manager-server/blob/main/TWL-2021.07.23.md)
