@@ -2,7 +2,7 @@
 //  File.swift
 //  
 //
-//  Created by 황인우 on 2021/07/28.
+//  Created by KangKyung, James on 2021/07/28.
 //
 
 import Fluent
@@ -11,7 +11,7 @@ import FluentPostgresDriver
 struct TaskMigration: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         _ = database.enum("category")
-            .case("toDo")
+            .case("todo")
             .case("doing")
             .case("done")
             .create()
@@ -29,6 +29,4 @@ struct TaskMigration: Migration {
     func revert(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Task.schema).delete()
     }
-    
-    
 }
