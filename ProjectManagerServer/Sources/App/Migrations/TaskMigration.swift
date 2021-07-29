@@ -21,7 +21,8 @@ struct TaskMigration: Migration {
                 .id()
                 .field("title", .string, .required)
                 .field("content", .string, .required)
-                .field("deadline_date", .date, .required)
+                .field("deadline_date", .datetime, .required)
+                .field("category", category, .required)
                 .create()
         }
     }

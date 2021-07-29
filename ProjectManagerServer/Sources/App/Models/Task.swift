@@ -11,7 +11,7 @@ import Vapor
 final class Task: Model, Content {
     
     enum Category_type: String, Codable {
-        case toDo, doing, done
+        case todo, doing, done
     }
     
     static let schema: String = "tasks"
