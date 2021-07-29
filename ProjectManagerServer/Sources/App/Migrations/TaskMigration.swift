@@ -10,7 +10,7 @@ import FluentPostgresDriver
 
 struct TaskMigration: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
-        let category = database.enum("category")
+        _ = database.enum("category")
             .case("toDo")
             .case("doing")
             .case("done")
