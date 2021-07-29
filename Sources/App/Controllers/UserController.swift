@@ -21,21 +21,48 @@ struct UserController: RouteCollection {
         tasks.put(use: update)
         tasks.delete(":taskId", use: delete)
     }
+}
 
-    func create(req: Request) throws -> EventLoopFuture<Task> {
-        let task = try req.content.decode(Task.self)
-        return task.create(on: req.db).map { task }
-    }
-
+extension UserController {
     func read(req: Request) throws -> EventLoopFuture<[Task]> {
         return Task.query(on: req.db).all()
     }
+}
 
+extension UserController {
+    func create(req: Request) throws -> EventLoopFuture<Task> {
+        guard req.headers.contentType == .json else {
+            throw HTTPError.isValidContentType
+        }
+
+        guard let task = try? req.content.decode(Task.self) else {
+            throw HTTPError.isNotDecoded
+        }
+        
+        guard task.description.count < 1000 else {
+            throw HTTPError.overNumberOfCharacters
+        }
+        
+        return task.create(on: req.db).map { task }
+    }
+}
+
+extension UserController {
     func update(req: Request) throws -> EventLoopFuture<HTTPStatus> {
-        let task = try req.content.decode(Task.self)
+        guard req.headers.contentType == .json else {
+            throw HTTPError.isValidContentType
+        }
 
+        guard let task = try? req.content.decode(Task.self) else {
+            throw HTTPError.isNotDecoded
+        }
+
+        guard task.description.count < 1000 else {
+            throw HTTPError.overNumberOfCharacters
+        }
+        
         return Task.find(task.id, on: req.db)
-            .unwrap(or: Abort(.notFound))
+            .unwrap(or: HTTPError.notExistID)
             .flatMap {
                 $0.title = task.title
                 $0.description = task.description
@@ -44,10 +71,12 @@ struct UserController: RouteCollection {
                 return $0.update(on: req.db).transform(to: .ok)
             }
     }
+}
 
+extension UserController {
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
         return Task.find(req.parameters.get("taskId"), on: req.db)
-            .unwrap(or: Abort(.notFound))
+            .unwrap(or: HTTPError.notExistID)
             .flatMap {
                 return $0.delete(on: req.db)
             }.transform(to: .ok)
