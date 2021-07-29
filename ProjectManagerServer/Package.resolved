@@ -29,8 +29,6 @@
         }
       },
       {
-<<<<<<< HEAD
-=======
         "package": "fluent",
         "repositoryURL": "https://github.com/vapor/fluent.git",
         "state": {
@@ -58,7 +56,6 @@
         }
       },
       {
->>>>>>> step2-james
         "package": "multipart-kit",
         "repositoryURL": "https://github.com/vapor/multipart-kit.git",
         "state": {
@@ -68,8 +65,6 @@
         }
       },
       {
-<<<<<<< HEAD
-=======
         "package": "postgres-kit",
         "repositoryURL": "https://github.com/vapor/postgres-kit.git",
         "state": {
@@ -88,7 +83,6 @@
         }
       },
       {
->>>>>>> step2-james
         "package": "routing-kit",
         "repositoryURL": "https://github.com/vapor/routing-kit.git",
         "state": {
@@ -98,8 +92,6 @@
         }
       },
       {
-<<<<<<< HEAD
-=======
         "package": "sql-kit",
         "repositoryURL": "https://github.com/vapor/sql-kit.git",
         "state": {
@@ -109,7 +101,6 @@
         }
       },
       {
->>>>>>> step2-james
         "package": "swift-backtrace",
         "repositoryURL": "https://github.com/swift-server/swift-backtrace.git",
         "state": {
