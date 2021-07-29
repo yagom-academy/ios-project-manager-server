@@ -1,6 +1,8 @@
 // swift-tools-version:5.2
 import PackageDescription
 
+// it allows you to add different dependencies for your project.
+
 let package = Package(
     name: "ProjectManagerServer",
     platforms: [
@@ -8,6 +10,7 @@ let package = Package(
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.
+        // you can see that we have a dependency on the vapor project.
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0-rc"),
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),

@@ -2,17 +2,21 @@ import Vapor
 import Fluent
 import FluentPostgresDriver
 
+// They configure file is used to configure the routes cofigured of the database comes figure the middleware.
+
+// configures your application
 public func configure(_ app: Application) throws {
-    // ⭐️ 아래 내용을 추가하여 작성한 마이그레이션을 등록합니다.
+
     app.migrations.add(CreateProjectItem())
 
     app.databases.use(
-        .postgres(hostname: "localhost", username: "kio", password: "", database: "sukio_database"),
+        .postgres(hostname: "localhost", username: "kio", password: "", database: "skdb"),
         as: .psql
     )
 
     if let databaseURL = Environment.get("DATABASE_URL"), var postgresConfig = PostgresConfiguration(url: databaseURL) {
-        postgresConfig.tlsConfiguration = .forClient(certificateVerification: .none)
+        postgresConfig.tlsConfiguration =
+            .makeClientConfiguration()
         app.databases.use(.postgres(
             configuration: postgresConfig
         ), as: .psql)
@@ -20,5 +24,6 @@ public func configure(_ app: Application) throws {
         // ...
     }
     
+    // register routes
     try routes(app)
 }
