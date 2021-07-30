@@ -10,10 +10,11 @@ public func configure(_ app: Application) throws {
         app.databases.use(.postgres(
             configuration: postgresConfig
         ), as: .psql)
-    } else {
-        // ...
     }
-    try routes(app)
+    
+    app.databases.use(.postgres(hostname: "localhost", username: "kangkyung", password: "", database: "ios-project-manager"), as: .psql)
     
     app.migrations.add(TaskMigration())
+    
+    try routes(app)
 }
