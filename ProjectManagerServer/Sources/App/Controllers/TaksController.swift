@@ -13,7 +13,7 @@ struct TaskController: RouteCollection {
         let task = routes.grouped("project")
         
         task.group(":category") { task in
-            task.get(use: readTodoTasks)
+            task.get(use: readCategorizedTasks)
         }
         
         task.group("task") { task in
@@ -21,7 +21,7 @@ struct TaskController: RouteCollection {
         }
         
         task.group("task", ":id") { task in
-            task.post(use: update)
+            task.patch(use: update)
             task.delete(use: delete)
         }
     }
@@ -32,22 +32,15 @@ struct TaskController: RouteCollection {
         return task.create(on: request.db).map { task }
     }
     
-    func readTodoTasks(request: Request) throws -> EventLoopFuture<[Task]> {
-        return Task.query(on: request.db).filter(\.$category == .todo).all()
-    }
-    
-    func readDoingTasks(request: Request) throws -> EventLoopFuture<[Task]> {
-        return Task.query(on: request.db).all()
-    }
-    
-    func readDoneTasks(request: Request) throws -> EventLoopFuture<[Task]> {
+    func readCategorizedTasks(request: Request) throws -> EventLoopFuture<[Task]> {
         return Task.query(on: request.db).all()
     }
     
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
         try Task.validate(content: request)
         let task = try request.content.decode(Task.self)
-        return Task.find(request.parameters.get("id"), on: request.db).unwrap(or: Abort(.notFound)).flatMap {
+        return Task.find(request.parameters.get("id"), on: request.db)
+            .unwrap(or: Abort(.notFound)).flatMap {
             
             $0.title = task.title
             $0.category = task.category
@@ -58,7 +51,10 @@ struct TaskController: RouteCollection {
         }
     }
     
-    func delete(request: Request) throws -> EventLoopFuture<Task> {
-        return Task.find(request.parameters.get("id"), on: request.db).unwrap(or: Abort(.badRequest))
-    }
+    func delete(request: Request) throws -> EventLoopFuture<HTTPStatus> {
+    return Task.find(request.parameters.get("id"), on: request.db)
+        .unwrap(or: Abort(.badRequest))
+        .flatMap{ $0.delete(on: request.db) }
+        .transform(to: .ok)
+}
 }
