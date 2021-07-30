@@ -24,10 +24,10 @@ struct TaskController: RouteCollection {
             task.post(use: update)
             task.delete(use: delete)
         }
-        
     }
     
     func create(request: Request) throws -> EventLoopFuture<Task> {
+        try Task.validate(content: request)
         let task = try request.content.decode(Task.self)
         return task.create(on: request.db).map { task }
     }
@@ -37,6 +37,7 @@ struct TaskController: RouteCollection {
     }
     
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
+        try Task.validate(content: request)
         let task = try request.content.decode(Task.self)
         return Task.find(request.parameters.get("id"), on: request.db).unwrap(or: Abort(.notFound)).flatMap {
             

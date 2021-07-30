@@ -40,5 +40,13 @@ final class Task: Model, Content {
         self.deadline_date = deadline_date
         self.category = category
     }
-    
+}
+
+extension Task: Validatable {
+    static func validations(_ validations: inout Validations) {
+        validations.add("title", as: String.self, is: !.empty)
+        validations.add("content", as: String?.self, required: false)
+        validations.add("deadline_date", as: Date.self, is: .valid)
+        validations.add("category", as: String.self, is: .in("todo", "doing", "done"))
+    }
 }
