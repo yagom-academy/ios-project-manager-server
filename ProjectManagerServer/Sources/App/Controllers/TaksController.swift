@@ -12,9 +12,9 @@ struct TaskController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let task = routes.grouped("project")
         
-        task.group(":category") { task in
-            task.get(use: readCategorizedTasks)
-        }
+        task.get("todo", use: readTodoTasks)
+        task.get("doing", use: readDoingTasks)
+        task.get("done", use: readDoneTasks)
         
         task.group("task") { task in
             task.post(use: create)
@@ -38,8 +38,16 @@ struct TaskController: RouteCollection {
         return task.create(on: request.db).map { task }
     }
     
-    func readCategorizedTasks(request: Request) throws -> EventLoopFuture<[Task]> {
-        return Task.query(on: request.db).all()
+    func readTodoTasks(request: Request) throws -> EventLoopFuture<[Task]> {
+        return Task.query(on: request.db).filter(\.$category == .todo).all()
+    }
+    
+    func readDoingTasks(request: Request) throws -> EventLoopFuture<[Task]> {
+        return Task.query(on: request.db).filter(\.$category == .doing).all()
+    }
+    
+    func readDoneTasks(request: Request) throws -> EventLoopFuture<[Task]> {
+        return Task.query(on: request.db).filter(\.$category == .done).all()
     }
     
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
