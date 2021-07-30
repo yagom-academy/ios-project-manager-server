@@ -1,12 +1,6 @@
 ## iOS-Project-Manager-Server
 
 - [API 문서](https://documenter.getpostman.com/view/14351200/TzsYPppH)
-<!--
-## Code Review
-
-- [Step1]()
-- [Step2]()
--->
 
 ## 팀원
 
