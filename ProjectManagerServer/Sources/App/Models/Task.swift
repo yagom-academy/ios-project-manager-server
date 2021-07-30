@@ -23,7 +23,7 @@ final class Task: Model, Content {
     var title: String
     
     @Field(key: "content")
-    var content: String
+    var content: String?
     
     @Field(key: "deadline_date")
     var deadline_date: Date
@@ -33,7 +33,7 @@ final class Task: Model, Content {
     
     init() { }
     
-    init(id: UUID?, title: String, content: String, deadline_date: Date, category: Category_type) {
+    init(id: UUID?, title: String, content: String?, deadline_date: Date, category: Category_type) {
         self.id = id
         self.title = title
         self.content = content

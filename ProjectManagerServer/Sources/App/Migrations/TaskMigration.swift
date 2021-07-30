@@ -20,7 +20,7 @@ struct TaskMigration: Migration {
             database.schema(Task.schema)
                 .id()
                 .field("title", .string, .required)
-                .field("content", .string, .required)
+                .field("content", .string)
                 .field("deadline_date", .datetime, .required)
                 .field("category", category, .required)
                 .create()
