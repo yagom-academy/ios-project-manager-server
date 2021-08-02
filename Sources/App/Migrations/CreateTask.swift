@@ -12,9 +12,9 @@ import FluentPostgresDriver
 struct CreateTask: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
              _ = database.enum("status")
-                 .case("TODO")
-                 .case("DOING")
-                 .case("DONE")
+                 .case("todo")
+                 .case("doing")
+                 .case("done")
                  .create()
 
          return database.enum("status")

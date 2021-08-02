@@ -42,9 +42,9 @@ final class Task: Model, Content {
 }
 
 enum Status: String, Codable {
-    case TODO
-    case DOING
-    case DONE
+    case todo
+    case doing
+    case done
 }
 
 extension Task: Validatable {
@@ -52,6 +52,6 @@ extension Task: Validatable {
         validations.add("title", as: String.self, is: !.empty)
         validations.add("description", as: String.self, is: .count(...1000), required: true)
         validations.add("dueDate", as: Double.self, is: .valid)
-        validations.add("status", as: String.self, is: .in("TODO", "DOING", "DONE"))
+        validations.add("status", as: String.self, is: .in("todo", "doing", "done"))
     }
 }
