@@ -17,20 +17,20 @@ struct CreateTask: Migration {
                  .case("done")
                  .create()
 
-             return database.enum("status")
-                 .read()
-                 .flatMap { status in
-                     database.schema(Task.schema)
-                         .id()
-                         .field("title", .string, .required)
-                         .field("description", .string, .required)
-                         .field("due_date", .datetime, .required)
-                         .field("status", status, .required)
-                         .create()
-             }
+         return database.enum("status")
+             .read()
+             .flatMap { status in
+                 database.schema(Task.schema)
+                     .id()
+                     .field("title", .string, .required)
+                     .field("description", .string, .required)
+                     .field("dueDate", .double, .required)
+                     .field("status", status, .required)
+                     .create()
          }
+     }
 
-         func revert(on database: Database) -> EventLoopFuture<Void> {
-            return database.schema(Task.schema).delete()
-         }
+     func revert(on database: Database) -> EventLoopFuture<Void> {
+        return database.schema(Task.schema).delete()
+     }
 }
