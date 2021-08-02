@@ -18,7 +18,7 @@ struct UserController: RouteCollection {
 
         tasks.get(use: read)
         tasks.post(use: create)
-        tasks.put(use: update)
+        tasks.put(":taskId", use: update)
         tasks.delete(":taskId", use: delete)
     }
 }
@@ -43,23 +43,25 @@ extension UserController {
 }
 
 extension UserController {
-    func update(req: Request) throws -> EventLoopFuture<HTTPStatus> {
+    func update(req: Request) throws -> EventLoopFuture<Task> {
         guard req.headers.contentType == .json else {
             throw HTTPError.isValidContentType
         }
 
         try Task.validate(content: req)
-        let task = try req.content.decode(Task.self)
+        let taskForPut = try req.content.decode(TaskForPut.self)
 
-        return Task.find(task.id, on: req.db)
+        return Task.find(req.parameters.get("taskId"), on: req.db)
             .unwrap(or: HTTPError.notExistID)
             .flatMap {
-                $0.title = task.title
-                $0.description = task.description
-                $0.dueDate = task.dueDate
-                $0.status = task.status
-                return $0.update(on: req.db).transform(to: .ok)
-            }
+                $0.title = taskForPut.title
+                $0.description = taskForPut.description
+                $0.dueDate = taskForPut.dueDate
+                $0.status = taskForPut.status
+                return $0.update(on: req.db)
+            }.flatMap {
+                Task.find(req.parameters.get("taskId"), on: req.db)
+            }.unwrap(or: HTTPError.notExistID)
     }
 }
 
