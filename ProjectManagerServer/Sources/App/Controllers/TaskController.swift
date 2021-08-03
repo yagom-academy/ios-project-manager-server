@@ -27,36 +27,36 @@ struct TaskController: RouteCollection {
     }
     
     func create(request: Request) throws -> EventLoopFuture<Task> {
-        let contentType = request.headers[Strings.ContentType]
-        if contentType != [Strings.JsonType] {
+        let contentType = request.headers[ContentType.string]
+        if contentType != [ContentType.jsonType] {
             throw TaskError.contentTypeIsNotJson
         }
         
         try Task.validate(content: request)
         
         let task = try request.content.decode(Task.self)
-        
+
         return task.create(on: request.db).map { task }
     }
     
     func readTodoTasks(request: Request) throws -> EventLoopFuture<[Task]> {
-        
+
         return Task.query(on: request.db).filter(\.$category == .todo).all()
     }
     
     func readDoingTasks(request: Request) throws -> EventLoopFuture<[Task]> {
-        
+
         return Task.query(on: request.db).filter(\.$category == .doing).all()
     }
     
     func readDoneTasks(request: Request) throws -> EventLoopFuture<[Task]> {
-        
+
         return Task.query(on: request.db).filter(\.$category == .done).all()
     }
     
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
-        let contentType = request.headers[Strings.ContentType]
-        if contentType != [Strings.JsonType] {
+        let contentType = request.headers[ContentType.string]
+        if contentType != [ContentType.jsonType] {
             throw TaskError.contentTypeIsNotJson
         }
         
