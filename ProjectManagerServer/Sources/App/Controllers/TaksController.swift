@@ -27,8 +27,8 @@ struct TaskController: RouteCollection {
     }
     
     func create(request: Request) throws -> EventLoopFuture<Task> {
-        let contentType = request.headers[Strings.ContentType]
-        if contentType != [Strings.JsonType] {
+        let contentType = request.headers[ContentType.string]
+        if contentType != [ContentType.jsonType] {
             throw TaskError.contentTypeIsNotJson
         }
         
@@ -51,8 +51,8 @@ struct TaskController: RouteCollection {
     }
     
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
-        let contentType = request.headers[Strings.ContentType]
-        if contentType != [Strings.JsonType] {
+        let contentType = request.headers[ContentType.string]
+        if contentType != [ContentType.jsonType] {
             throw TaskError.contentTypeIsNotJson
         }
         
