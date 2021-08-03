@@ -35,18 +35,22 @@ struct TaskController: RouteCollection {
         try Task.validate(content: request)
         
         let task = try request.content.decode(Task.self)
+        
         return task.create(on: request.db).map { task }
     }
     
     func readTodoTasks(request: Request) throws -> EventLoopFuture<[Task]> {
+        
         return Task.query(on: request.db).filter(\.$category == .todo).all()
     }
     
     func readDoingTasks(request: Request) throws -> EventLoopFuture<[Task]> {
+        
         return Task.query(on: request.db).filter(\.$category == .doing).all()
     }
     
     func readDoneTasks(request: Request) throws -> EventLoopFuture<[Task]> {
+        
         return Task.query(on: request.db).filter(\.$category == .done).all()
     }
     
@@ -58,23 +62,38 @@ struct TaskController: RouteCollection {
         
         try Task.validate(content: request)
         
-        let task = try request.content.decode(Task.self)
-        return Task.find(request.parameters.get("id"), on: request.db)
+        let updatedTask = try request.content.decode(Task.self)
+        
+        let result: EventLoopFuture<HTTPStatus> = Task.find(request.parameters.get("id"), on: request.db)
             .unwrap(or: Abort(.notFound)).flatMap {
-                
-                $0.title = task.title
-                $0.category = task.category
-                $0.content = task.content
-                $0.deadline_date = task.deadline_date
+                $0.title = updatedTask.title
+                $0.category = updatedTask.category
+                $0.content = updatedTask.content
+                $0.deadline_date = updatedTask.deadline_date
                 
                 return $0.update(on: request.db).transform(to: .ok)
             }
+        
+        return result
     }
     
     func delete(request: Request) throws -> EventLoopFuture<HTTPStatus> {
-        return Task.find(request.parameters.get("id"), on: request.db)
-            .unwrap(or: Abort(.badRequest))
-            .flatMap{ $0.delete(on: request.db) }
-            .transform(to: .ok)
+        let foundTask = Task.find(request.parameters.get("id"), on: request.db).unwrap(or: Abort(.notFound))
+        let deleteProcess = deleteTask(oldvalue: foundTask, request: request)
+        
+        return fetchSuccessfulStatus(event: deleteProcess)
+    }
+    
+    private func deleteTask<T: Task>(oldvalue: EventLoopFuture<T>, request: Request) -> EventLoopFuture<Void> {
+        
+        return oldvalue.flatMap {
+            $0.delete(on: request.db)
+        }
+    }
+    
+    private func fetchSuccessfulStatus(event: EventLoopFuture<Void>) -> EventLoopFuture<HTTPStatus> {
+        let status: EventLoopFuture<HTTPStatus> = event.transform(to: .ok)
+        
+        return status
     }
 }
