@@ -10,7 +10,7 @@ public func configure(_ app: Application) throws {
     app.migrations.add(CreateProjectItem())
 
     app.databases.use(
-        .postgres(hostname: "localhost", username: "kio", password: "", database: "skdb"),
+        .postgres(hostname: "localhost", username: "sjsj", password: "", database: "toriDB"),
         as: .psql
     )
 

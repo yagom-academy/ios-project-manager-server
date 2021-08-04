@@ -8,7 +8,7 @@
 import Fluent
 import Vapor
 
-final class Task: Model {
+final class Task: Model, Content {
     static let schema = "tasks"
 
     @ID(key: .id)
@@ -27,7 +27,7 @@ final class Task: Model {
     var status: String
 
     init() { }
-
+    
     init(id: UUID? = nil,
          title: String,
          description: String? = nil,
@@ -38,6 +38,14 @@ final class Task: Model {
         self.description = description
         self.deadline = deadline
         self.status = status
+    }
+    
+    init(projectItem: PostTask) {
+        self.id = projectItem.id
+        self.title = projectItem.title
+        self.description = projectItem.description
+        self.deadline = projectItem.deadline
+        self.status = projectItem.status
     }
 }
 

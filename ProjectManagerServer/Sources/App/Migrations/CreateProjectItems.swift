@@ -13,7 +13,7 @@ struct CreateProjectItem: Migration {
         return           database.schema(Task.schema)
             .id()
             .field("title", .string, .required)
-            .field("description", .string, .required)
+            .field("description", .string)
             .field("deadline", .int, .required)
             .field("status", .string, .required)
             .create()
