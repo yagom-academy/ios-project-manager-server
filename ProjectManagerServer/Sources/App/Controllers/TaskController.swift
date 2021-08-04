@@ -8,11 +8,12 @@
 import Fluent
 import Vapor
 
+
 struct TaskController: RouteCollection {
     
     func boot(routes: RoutesBuilder) throws {
             let projectItems = routes.grouped("tasks")
-            projectItems.group(":progress") { projectItem in
+            projectItems.group(":status") { projectItem in
                 projectItem.get(use: read)
             }
         
@@ -24,13 +25,19 @@ struct TaskController: RouteCollection {
     
     func create(req: Request) throws -> EventLoopFuture<Task> {
         let exist = try req.content.decode(Task.self)
-        
+//
 //        let newProjectItem = Task(projectItem: exist)
+//        return newProjectItem.create(on: req.db).map { newProjectItem }
         return exist.create(on: req.db).map { exist }
     }
     
     func read(req: Request) throws -> EventLoopFuture<[Task]> {
-        return Task.query(on: req.db).all()
+        let validStatus = ["todo", "doing", "done"]
+
+        guard let status = req.parameters.get("status"), validStatus.contains(status) else {
+            throw Abort(.badRequest)
+        }
+        return Task.query(on: req.db).filter(\.$status == status).all()
     }
     
     func update(req: Request) throws -> EventLoopFuture<Task> {

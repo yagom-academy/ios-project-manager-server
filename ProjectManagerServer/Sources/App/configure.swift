@@ -8,12 +8,7 @@ import FluentPostgresDriver
 public func configure(_ app: Application) throws {
 
     app.migrations.add(CreateProjectItem())
-
-    app.databases.use(
-        .postgres(hostname: "localhost", username: "sjsj", password: "", database: "toriDB"),
-        as: .psql
-    )
-
+    
     if let databaseURL = Environment.get("DATABASE_URL"), var postgresConfig = PostgresConfiguration(url: databaseURL) {
         postgresConfig.tlsConfiguration =
             .makeClientConfiguration()
@@ -21,7 +16,10 @@ public func configure(_ app: Application) throws {
             configuration: postgresConfig
         ), as: .psql)
     } else {
-        // ...
+        app.databases.use(
+            .postgres(hostname: "localhost", username: "kio", password: "", database: "skdb"),
+            as: .psql
+        )
     }
     
     // register routes
