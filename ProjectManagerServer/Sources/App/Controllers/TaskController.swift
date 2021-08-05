@@ -27,8 +27,7 @@ struct TaskController: RouteCollection {
     }
     
     func create(request: Request) throws -> EventLoopFuture<Task> {
-        let contentType = request.headers[ContentType.string]
-        if contentType != [ContentType.jsonType] {
+        guard request.headers.contentType == .json else {
             throw TaskError.contentTypeIsNotJson
         }
         
