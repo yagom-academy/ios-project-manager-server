@@ -23,11 +23,10 @@ struct TaskController: RouteCollection {
     }
 
     func create(req: Request) throws -> EventLoopFuture<Task> {
-        let exist = try req.content.decode(Task.self)
-//
-//        let newProjectItem = Task(projectItem: exist)
-//        return newProjectItem.create(on: req.db).map { newProjectItem }
-        return exist.create(on: req.db).map { exist }
+        try PostTask.validate(content: req)
+        let exist = try req.content.decode(PostTask.self)
+        let newProjectItem = Task(projectItem: exist)
+        return newProjectItem.create(on: req.db).map { newProjectItem }
     }
     
     func read(req: Request) throws -> EventLoopFuture<[Task]> {
@@ -40,6 +39,7 @@ struct TaskController: RouteCollection {
     }
     
     func update(req: Request) throws -> EventLoopFuture<Task> {
+        try PatchTask.validate(content: req)
         let exist = try req.content.decode(PatchTask.self)
         
         return Task.find(exist.id, on: req.db)

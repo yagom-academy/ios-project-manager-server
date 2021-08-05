@@ -10,7 +10,7 @@ import Fluent
 struct CreateProjectItem: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         
-        return           database.schema(Task.schema)
+        return  database.schema(Task.schema)
             .id()
             .field("title", .string, .required)
             .field("description", .string)
