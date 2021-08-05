@@ -8,7 +8,6 @@
 import Fluent
 import Vapor
 
-
 struct TaskController: RouteCollection {
     
     func boot(routes: RoutesBuilder) throws {
@@ -22,7 +21,7 @@ struct TaskController: RouteCollection {
             projectItem.patch(use: update)
             projectItem.delete(use: delete)
     }
-    
+
     func create(req: Request) throws -> EventLoopFuture<Task> {
         let exist = try req.content.decode(Task.self)
 //

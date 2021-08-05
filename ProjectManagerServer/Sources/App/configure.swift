@@ -6,15 +6,17 @@ import FluentPostgresDriver
 
 // configures your application
 public func configure(_ app: Application) throws {
-
+    
     app.migrations.add(CreateProjectItem())
     
     if let databaseURL = Environment.get("DATABASE_URL"), var postgresConfig = PostgresConfiguration(url: databaseURL) {
-        postgresConfig.tlsConfiguration =
-            .makeClientConfiguration()
-        app.databases.use(.postgres(
-            configuration: postgresConfig
-        ), as: .psql)
+        var clientTLSConfiguration = TLSConfiguration.makeClientConfiguration()
+        clientTLSConfiguration.certificateVerification = .none
+        postgresConfig.tlsConfiguration = clientTLSConfiguration
+        app.databases.use(
+            .postgres(configuration: postgresConfig),
+            as: .psql
+        )
     } else {
         app.databases.use(
             .postgres(hostname: "localhost", username: "kio", password: "", database: "skdb"),
