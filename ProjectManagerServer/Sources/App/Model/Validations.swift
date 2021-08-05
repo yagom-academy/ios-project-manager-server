@@ -10,7 +10,7 @@ import Vapor
 
 extension PatchTask: Validatable {
     static func validations(_ validations: inout Validations) {
-        validations.add("id", as: String.self, required: true )
+        validations.add("id", as: UUID.self, required: true )
         validations.add("title", as: String.self, required: false)
         validations.add("description", as: String.self, required: false)
         validations.add("deadline", as: Int.self, required: false)

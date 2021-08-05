@@ -23,7 +23,16 @@ struct TaskController: RouteCollection {
     }
 
     func create(req: Request) throws -> EventLoopFuture<Task> {
-        try PostTask.validate(content: req)
+        guard req.headers.contentType == .json else {
+            throw HTTPError.invalidContentType
+        }
+        
+        do {
+            try PostTask.validate(content: req)
+        } catch {
+            throw HTTPError.failedToCreatingValidation
+        }
+        
         let exist = try req.content.decode(PostTask.self)
         let newProjectItem = Task(projectItem: exist)
         return newProjectItem.create(on: req.db).map { newProjectItem }
@@ -39,9 +48,18 @@ struct TaskController: RouteCollection {
     }
     
     func update(req: Request) throws -> EventLoopFuture<Task> {
-        try PatchTask.validate(content: req)
-        let exist = try req.content.decode(PatchTask.self)
+        guard req.headers.contentType == .json else {
+            throw HTTPError.invalidContentType
+        }
         
+        do {
+            try PatchTask.validate(content: req)
+        } catch {
+            throw HTTPError.failedToUpdatingValidation
+        }
+        
+        let exist = try req.content.decode(PatchTask.self)
+
         return Task.find(exist.id, on: req.db)
             .unwrap(or: Abort(.notFound))
             .flatMap { item in
@@ -56,12 +74,12 @@ struct TaskController: RouteCollection {
     
     func delete(req: Request) throws -> EventLoopFuture<HTTPStatus> {
         guard req.headers.contentType == .json else {
-            throw Abort(.notFound)
+            throw HTTPError.invalidContentType
         }
         
         let exist = try req.content.decode(DeleteTask.self)
         return Task.find(exist.id, on: req.db)
-            .unwrap(or: Abort(.notFound))
+            .unwrap(or: HTTPError.invalidID)
             .flatMap { $0.delete(on: req.db) }
             .transform(to: .ok)
     }
