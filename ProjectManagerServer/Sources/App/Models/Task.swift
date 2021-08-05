@@ -9,11 +9,6 @@ import Fluent
 import Vapor
 
 final class Task: Model, Content {
-    
-    enum Category_type: String, Codable {
-        case todo, doing, done
-    }
-    
     static let schema: String = "tasks"
     
     @ID(key: .id)
