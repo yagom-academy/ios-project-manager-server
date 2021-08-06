@@ -1,8 +1,8 @@
 @testable import App
 import XCTVapor
 
-/// Test DELTE Methods
-final class TestDELTE: XCTestCase {
+/// Test DELETE Methods
+final class TestDELETE: XCTestCase {
     var app: Application!
     
     override func setUpWithError() throws {
@@ -37,10 +37,6 @@ final class TestDELTE: XCTestCase {
     }
     
     func testFailToPostTasks() throws {
-        // given
-        let app = Application(.testing)
-        defer { app.shutdown() }
-        try configure(app)
         
         // when
         try app.test(.GET, "project/invalidURL", afterResponse: { response in
