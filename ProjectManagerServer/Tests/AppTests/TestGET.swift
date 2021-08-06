@@ -14,7 +14,7 @@ final class TestGET: XCTestCase {
         app.shutdown()
     }
     
-    func testTodoTasks() throws {
+    func testGetTodoTasks() throws {
         
         // given
         let task = Task(
@@ -40,7 +40,7 @@ final class TestGET: XCTestCase {
         })
     }
     
-    func testFailToTodoTasks() throws {
+    func testFailToGetTodoTasks() throws {
         
         // given
         let task = Task(
