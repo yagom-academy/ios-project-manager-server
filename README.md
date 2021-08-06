@@ -7,6 +7,7 @@
 - [Step1](https://github.com/yagom-academy/ios-project-manager-server/pull/37)
 - [Step2](https://github.com/yagom-academy/ios-project-manager-server/pull/41)
 - [Step3](https://github.com/yagom-academy/ios-project-manager-server/pull/45)
+- [Step4](https://github.com/yagom-academy/ios-project-manager-server/pull/47)
 
 ## 팀원
 
@@ -19,3 +20,4 @@
 - [Ground Rule](https://github.com/KangKyung/ios-project-manager-server/blob/main/Ground%20Rule.md)
 - [TWL-2021.07.23](https://github.com/KangKyung/ios-project-manager-server/blob/main/TWL-2021.07.23.md)
 - [TWL-2021.07.30](https://github.com/KangKyung/ios-project-manager-server/blob/main/TWL-2021.07.30.md)
+- [TWL-2021.08.06](https://github.com/KangKyung/ios-project-manager-server/blob/main/TWL-2021.08.06.md)
