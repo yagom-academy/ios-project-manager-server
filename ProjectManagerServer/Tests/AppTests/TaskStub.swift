@@ -11,6 +11,7 @@ import XCTVapor
 final class TaskStub {
     static let shared = TaskStub()
     
+    let expectedID = UUID.init(uuidString: "641cc15f-f280-4a22-8b81-9186ea67ada6")
     let expectedTitle = "James Good"
     let expectedContent = "king king"
     let expectedDate = Date()
