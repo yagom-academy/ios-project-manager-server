@@ -16,9 +16,10 @@ final class TestPOST: XCTestCase {
     }
     
     func testPostTasks() throws {
-        // when
+        // given
         let task = Task(id: nil, title: "test", content: "testest", deadline_date: Date(), category: .todo)
-
+        
+        // when
         try app.test(.POST, "project/task", beforeRequest: { request in
             try request.content.encode(task)
         }, afterResponse: { response in

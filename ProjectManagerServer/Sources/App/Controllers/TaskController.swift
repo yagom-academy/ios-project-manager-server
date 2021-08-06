@@ -54,21 +54,33 @@ struct TaskController: RouteCollection {
     }
     
     func update(request: Request) throws -> EventLoopFuture<HTTPStatus> {
-        let contentType = request.headers[ContentType.string]
-        if contentType != [ContentType.jsonType] {
+        guard request.headers.contentType == .json else {
             throw TaskError.contentTypeIsNotJson
         }
         
-        try Task.validate(content: request)
+        try TaskForPatch.validate(content: request)
         
-        let updatedTask = try request.content.decode(Task.self)
+        let updatedTask = try request.content.decode(TaskForPatch.self)
+        
+        if updatedTask.isAllNil {
+            throw TaskError.allValuesAreNil
+        }
         
         let result: EventLoopFuture<HTTPStatus> = Task.find(request.parameters.get("id"), on: request.db)
             .unwrap(or: Abort(.notFound)).flatMap {
-                $0.title = updatedTask.title
-                $0.category = updatedTask.category
-                $0.content = updatedTask.content
-                $0.deadline_date = updatedTask.deadline_date
+                
+                if let updatedTitle = updatedTask.title {
+                    $0.title = updatedTitle
+                }
+                if let updatedCategory = updatedTask.category {
+                    $0.category = updatedCategory
+                }
+                if let updatedContent = updatedTask.content {
+                    $0.content = updatedContent
+                }
+                if let updatedDeadline = updatedTask.deadline_date {
+                    $0.deadline_date = updatedDeadline
+                }
                 
                 return $0.update(on: request.db).transform(to: .ok)
             }

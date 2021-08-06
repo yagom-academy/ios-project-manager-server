@@ -9,6 +9,7 @@ import Vapor
 
 enum TaskError {
     case contentTypeIsNotJson
+    case allValuesAreNil
 }
 
 extension TaskError: AbortError {
@@ -16,12 +17,16 @@ extension TaskError: AbortError {
         switch self {
         case .contentTypeIsNotJson:
             return "Content-Type is Not application/json"
+        case .allValuesAreNil:
+            return "All Values of json file are nil"
         }
     }
 
     var status: HTTPResponseStatus {
         switch self {
         case .contentTypeIsNotJson:
+            return .badRequest
+        case .allValuesAreNil:
             return .badRequest
         }
     }
