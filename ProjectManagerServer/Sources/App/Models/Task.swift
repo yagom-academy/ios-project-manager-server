@@ -17,7 +17,7 @@ final class Task: Model, Content {
     @Field(key: "title")
     var title: String
     
-    @Field(key: "content")
+    @OptionalField(key: "content")
     var content: String?
     
     @Field(key: "deadline_date")
