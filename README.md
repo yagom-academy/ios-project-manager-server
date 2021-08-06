@@ -66,7 +66,7 @@
 3. `DELETE` Method 사용 시, URL만 알고 있다면 타 사용자도 삭제할 수 있는 일이 벌어질 수 있다고 생각합니다. 이 부분에서 보안을 어떻게 처리해주면 좋을지 궁금합니다😆
 <br>
 
-### 답변
+### [답변](https://github.com/yagom-academy/ios-project-manager-server/pull/35#issuecomment-884658035)
 1. 표준으로 작성해야 하는 표기법은 없고, 서로 약속하는 방식을 따르는게 더 중요하다고 생각해요. 제가 겪어본 바로는 작년에 서버 구현은 snake case 를 쓰다가 이번에 개편되면서 camel case 로 전환하기도 하더라구요. API 문서를 작성하는 표준은 따로 없다고 봐도 무방할 것 같아요. 룰은 같이 만들어가는거죠 😉
 2. status 값으로만 구별되는게 번거롭다고 생각한 이유가 뭔가요? 다시 클라이언트에서 status 별로 나누는 작업이 필요해서 그렇게 생각한건가요? 클라이언트에서의 작업을 최소화 해주려면 todo, doing, done 으로 묶어서 배열을 내려주는 방법은 어떨까요?
 3. REST api 의 authentication 에 대해 여러가지 알아보면 좋을 것 같아요. 익숙할지 모르겠지만 토큰 방식도 그중 한가지고요. 제가 사용해본 open api 에서는 access key 를 지급하고 query 에 항상 넘겨주는 방식을 사용하기도 했어요. 혹은 여기 나온 Authentication Mechanisms 도 참조하면 도움이 될 것 같네요. 혹은 hmac 이라는 방식도 쓰는데 한번 알아만 보셔도 좋을 것 같아요. 요건 api 경로에 hmac 을 추가하고 hash 값으로 인증된 사용자인지 판단하는 방식이에요. 제 생각엔 토큰이나 간단한 access key 정도가 좋을 것 같네요!
@@ -95,6 +95,9 @@
 2. Migration
 - `vapor run migrate`는 로컬상에서 데이터베이스에 올릴 때 사용하고, `heroku run Run -- migrate --env production`은 최초 단 한번만 사용하고, 이후 업데이트시마다 heroku push를 통해 하면 된다고 알고 있습니다. 위의 과정에서 heroku migrate가 하는 역할과 vapor, heroku의 2곳에서 `Migrate` 명령어를 사용할 수 있는데 정확히 어떤 차이점을 가지고 있는지 잘 이해하지 못하여 조언을 구하고 싶습니다😭 
 
+### [답변](https://github.com/yagom-academy/ios-project-manager-server/pull/42#pullrequestreview-719038571)
+1. varchar vs text 요 stackoverflow 의 맨 첫 답변 참고하시면 좋을 것 같습니다. char도 결국에 해당 공간을 다 사용하지 못하면 낭비일 수 있는 단점을 가지고 있고요, 지금 상태에서는 varchar 로 다루는게 가장 최선이지 않을까 싶어요.
+
 <br><br><br>
 
 # 프로젝트 진행 및 참고사항
@@ -114,6 +117,10 @@
 - PostgreSQL
 - Heroku 서버 배포
 #### 08.02~08.08
+- API 구현에 필요한 인코딩/디코딩 타입
+- 데이터베이스 CRUD 구현
+- CRUD DTO 
+- Error 커스터마이징
 
 <br>
 <br>
@@ -124,14 +131,20 @@
 8080포트를 킬하니 되었다.
 - ['heroku' does not appear to be a git repositor](https://alreadyusedadress.tistory.com/51)
    - `git init`, `heroku login`, `git remote` 까지 해주니 작동!
-- [heroku: Waiting for login... !](https://stackoverflow.com/questions/57102124/heroku-login-cannot-open-browser)
-   - 터미널에서 멈추는 상황이 발생하여 `heroku login -i` 으로 재로그인
 - [xcrun: error: unable to find utility “xctest”, not a developer tool or in PATH](https://stackoverflow.com/questions/61501298/xcrun-error-unable-to-find-utility-xctest-not-a-developer-tool-or-in-path)
-   - 콘솔창 오류: Fatal error: result 1: file VaporToolbox/exec.swift, line 55
+Fatal error: result 1: file VaporToolbox/exec.swift, line 55
 [1]    6858 illegal hardware instruction  vapor run migrate
 - [[ WARNING ] connection reset (error set): Connection refused (errno: 111)
 Fatal error: Error raised at top level: connection reset (error set): Connection refused (errno: 111): file Swift/ErrorType.swift, line 200](https://stackoverflow.com/questions/55205247/vapor-connection-refused-errno-61)
-   - postgre 서버를 시작하지 않아서 생긴 문제였다.
+- git pull error: The following untracked working tree files would be overwritten by merge
+    - [대안1](https://github.com/avast/retdec/issues/92)
+    - [대안2](https://stackoverflow.com/questions/17989165/git-checkout-master-error-the-following-untracked-working-tree-files-would-be-o)
+
+- [heroku 에서 git push heroku master 에러 나는 경우](https://velog.io/@jangky000/Heroku-%EB%B0%B0%ED%8F%AC)
+- `POSTMAN GET 오류`
+{ "error": true, "reason": "invalid field: deadline type: Int error: `typeMismatch`(Swift.Int, Swift.DecodingError.Context(codingPath: [], debugDescription: "Could not convert to Int: 123145215.0", underlyingError: nil))" }
+   - 자료형을 바꾸고 vapor revert를 안해줘서 생긴 오류였다.
+   - `vapor run migrate --revert`하고 `vapor run migrate` 을 다시 해주니 정상 작동
    
 <br>
 <br>
