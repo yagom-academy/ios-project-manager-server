@@ -9,7 +9,7 @@ func routes(_ app: Application) throws {
     
     // localhost:8080/
     app.get { req in
-        return "It works!123"
+        return "It works!"
     }
 
     // localhost:8080/hello

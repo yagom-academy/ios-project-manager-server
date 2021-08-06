@@ -26,3 +26,9 @@ extension PostTask: Validatable {
         validations.add("status", as: String.self, is: .in("todo", "doing", "done"), required: true)
     }
 }
+
+extension DeleteTask: Validatable {
+    static func validations(_ validations: inout Validations) {
+        validations.add("id", as: UUID.self, required: true )
+    }
+}
