@@ -89,6 +89,12 @@ struct TaskController: RouteCollection {
     }
     
     func delete(request: Request) throws -> EventLoopFuture<HTTPStatus> {
+        request.headers.contentType = .json
+
+        guard request.headers.contentType == .json else {
+            throw TaskError.contentTypeIsNotJson
+        }
+        
         let foundTask = Task.find(request.parameters.get("id"), on: request.db).unwrap(or: Abort(.notFound))
         let deleteProcess = deleteTask(oldvalue: foundTask, request: request)
         
